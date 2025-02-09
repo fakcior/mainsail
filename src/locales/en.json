@@ -808,6 +808,10 @@
             "TempTooHigh": "Temperature too high for {name}! (max: {max})",
             "TempTooLow": "Temperature too low for {name}! (min: {min})"
         },
+        "ToolchangerPanel": {
+            "Headline": "Toolchanger",
+            "Initialize": "Initialize Toolchanger"
+        },
         "ToolheadControlPanel": {
             "Absolute": "absolute",
             "ALL": "ALL",
