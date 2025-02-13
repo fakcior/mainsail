@@ -1,6 +1,11 @@
 <template>
 <div>
-    <panel :icon="mdiSwapVerticalBold" :title="$t('Panels.ToolchangerPanel.Headline')" :collapsible="true" card-class="toolchanger-panel">
+    <panel 
+        v-if="klipperReadyForGui" 
+        :icon="mdiSwapVerticalBold" 
+        :title="$t('Panels.ToolchangerPanel.Headline')" 
+        :collapsible="true" 
+        card-class="toolchanger-panel">
         <template #buttons>
             <v-menu left offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">

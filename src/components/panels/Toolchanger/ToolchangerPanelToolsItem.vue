@@ -1,26 +1,26 @@
 <template>
-    <div :class="['toolchanger-tool', { active: isActive, changing: isChanging && isActive }]">
+    <div :class="['flex-grow-1 toolchanger-tool', { active: isActive, changing: isChanging && isActive }]">
         <div class="tool-name">{{ name }}</div>
         <div class="filament-info">
-            <spool-icon :color="selectedColor" @click-spool="showColorPicker = true"></spool-icon>
+            <spool-icon style="margin: 10%;" :color="selectedColor" @click-spool="showColorPicker = true"></spool-icon>
             <v-menu v-model="showColorPicker" :close-on-content-click="false" offset-y>
                 <template #activator="{ on, attrs }">
                     <div v-bind="attrs" v-on="on"></div>
                 </template>
                 <v-color-picker v-model="selectedColor" @input="setToolColor"></v-color-picker>
             </v-menu>
-            <v-select :items="filamentTypes" v-model="selectedType" @change="setToolMaterial" label="Filament Type"></v-select>
+            <v-select style="margin-left: 10%; margin-right: 10%;"  :items="filamentTypes" v-model="selectedType" @change="setToolMaterial" label="Filament Type"></v-select>
         </div>
         <div class="tool-buttons">
-            <v-btn small style="width: 100%" @click="doSend(`LOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
+            <v-btn small @click="doSend(`LOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
                 <v-icon left small>{{mdiRedoVariant}}</v-icon>
                 {{ $t('Load', { isDefault: '' }) }}
             </v-btn>
-            <v-btn small style="width: 100%" @click="doSend(`UNLOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
+            <v-btn small @click="doSend(`UNLOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
                 <v-icon left small>{{mdiUndoVariant}}</v-icon>
                 {{ $t('Unload', { isDefault: '' }) }}
             </v-btn>
-            <v-btn small style="width: 100%" @click="doSend(`T${toolNumber}`)">
+            <v-btn small @click="doSend(`T${toolNumber}`)">
                 <v-icon left small>{{mdiTargetVariant}}</v-icon>
                 {{ $t('Select', { isDefault: '' }) }}
             </v-btn>
@@ -76,11 +76,12 @@ export default class ToolchangerPanel extends Mixins(BaseMixin, ToolchangerMixin
 
 <style scoped>
 .toolchanger-tool {
+    margin: 1%;
     border-radius: 10px;
     background-color: var(--v-background-base);
     transition: background-color 0.3s ease;
     text-align: center;
-    padding: 20px;
+    padding: auto;
     position: relative;
 }
 
@@ -123,5 +124,6 @@ export default class ToolchangerPanel extends Mixins(BaseMixin, ToolchangerMixin
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin: 10%;
 }
 </style>
