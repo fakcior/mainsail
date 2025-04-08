@@ -3,17 +3,19 @@
         <v-divider class="mt-3 mb-0" />
         <v-card-title class="text-h5">Filament Assignment</v-card-title>
         <v-card-text class="pb-0">
+            <p class="body-2">
+                    Filament change count: {{ filament_change_count }}
+                </p>
             <v-row>
                 <v-col v-for="(filament, index) in filaments" :key="index" v-if="filament.used > 0" class="filament-box">
-                    <div class="filament-type" :style="{ backgroundColor: filament.color, color: getTextColor(filament.color) }">{{ filament.type }}</div>
+                    <div class="filament-type" :style="{ backgroundColor: filament.color, color: getTextColor(filament.color) }">{{ filament.type }} ({{ filament.used }} g)</div>
                     <v-menu offset-y>
                         <template #activator="{ on, attrs }">
                             <v-btn
                                 v-bind="attrs"
                                 v-on="on"
                                 class="tool-button"
-                                :style="{ backgroundColor: selectedTools[index]?.color, color: getTextColor(selectedTools[index]?.color) }"
-                            >
+                                :style="{ backgroundColor: selectedTools[index]?.color, color: getTextColor(selectedTools[index]?.color) }">
                                 {{ selectedTools[index]?.label || 'Select Tool' }}
                             </v-btn>
                         </template>
@@ -22,8 +24,7 @@
                                 v-for="tool in toolOptions"
                                 :key="tool.value"
                                 @click="selectTool(tool, index)"
-                                :style="{ backgroundColor: tool.color, color: getTextColor(tool.color) }"
-                            >
+                                :style="{ backgroundColor: tool.color, color: getTextColor(tool.color) }">
                                 {{ tool.label }}
                             </v-list-item>
                         </v-list>
@@ -50,10 +51,15 @@ export default class StartPrintDialogToolchanger extends Mixins(BaseMixin, Toolc
     showChangeSpoolDialog = false
     selectedTools: Array<any> = []
 
+    get filament_change_count()
+    {
+        return this.file.filament_change_count ?? 0
+    }
+
     get filaments() {
-        const colors = this.file.filament_colors?.split(';') ?? []
+        const colors = this.file.filament_colors ?? []
         const types = this.file.filament_type?.split(';') ?? []
-        const used = this.file.filament_used_mm?.split(';').map(Number) ?? []
+        const used = this.file.filament_weights?.map(Number) ?? []
 
         return colors.map((color: string, index: string | number) => ({
             color,
