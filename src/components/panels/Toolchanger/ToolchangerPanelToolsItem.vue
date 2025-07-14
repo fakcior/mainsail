@@ -18,11 +18,11 @@
         </div>
         
         <div class="tool-buttons">
-            <v-btn small @click="doSend(`LOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
+            <v-btn small @click="doSend(`LOAD_ONE_FILAMENT TOOL=${toolNumber} MATERIAL=${selectedType}`)">
                 <v-icon left small>{{mdiRedoVariant}}</v-icon>
                 {{ $t('LOAD', { isDefault: '' }) }}
             </v-btn>
-            <v-btn small @click="doSend(`UNLOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
+            <v-btn small @click="doSend(`UNLOAD_ONE_FILAMENT TOOL=${toolNumber} MATERIAL=${selectedType}`)">
                 <v-icon left small>{{mdiUndoVariant}}</v-icon>
                 {{ $t('UNLOAD', { isDefault: '' }) }}
             </v-btn>
