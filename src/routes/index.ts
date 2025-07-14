@@ -60,7 +60,7 @@ const routes: AppRoute[] = [
         component: ToolCalibration,
         alwaysShow: true,
         showInNavi: true,
-        position: 20,
+        position: 35,
         fullscreen: true,
     },
     {
