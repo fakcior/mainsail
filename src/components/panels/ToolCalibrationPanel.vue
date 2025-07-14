@@ -44,7 +44,7 @@ export default class ToolCalibrationPanel extends Mixins(BaseMixin) {
 <style scoped>
 #tool-calibration-frame {
     width: 100%;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 150px);
     border-width: 0px;
 }
 </style>
