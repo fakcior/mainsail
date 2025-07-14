@@ -102,6 +102,7 @@ export const allDashboardPanels = [
     'spoolman',
     'temperature',
     'webcam',
+    'toolcalibration'
 ]
 
 export const thumbnailSmallMin = 30

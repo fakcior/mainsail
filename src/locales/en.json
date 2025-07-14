@@ -837,6 +837,9 @@
             "NoWebcam": "No webcam available. Add a webcam under \"Interface Settings\" -> \"Webcams\".",
             "UnknownWebcamService": "Unknown Webcam Service"
         },
+        "ToolCalibrationPanel": {
+            "Headline": "Tool calibration"
+        },
         "ZoffsetPanel": {
             "Clear": "Clear",
             "Headline": "Z-Offset",
@@ -866,7 +869,8 @@
         "Machine": "Machine",
         "Printers": "Printers",
         "Timelapse": "Timelapse",
-        "Webcam": "Webcam"
+        "Webcam": "Webcam",
+        "Tool calibration": "Tool calibration"
     },
     "ScrewsTiltAdjust": {
         "Accept": "accept",
