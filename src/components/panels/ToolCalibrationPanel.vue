@@ -4,7 +4,7 @@
         :icon="mdiAdjust"
         :title="$t('Panels.ToolCalibrationPanel.Headline')"
         :collapsible="$route.fullPath !== '/toolCalibration'"
-        card-class="toolcalibration-panel"
+        card-class="tool-calibration-panel"
         :margin-bottom="currentPage !== 'page'">
         <template #buttons>
            
