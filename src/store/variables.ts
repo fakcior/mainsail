@@ -65,7 +65,10 @@ export const allowedMetadata = [
     'filament_temps',
     'filament_type',
     'filament_total',
+    'filament_colors',
+    'filament_weights',
     'filament_weight_total',
+    'filament_change_count',
     'filament_weights',
     'nozzle_diameter',
     'first_layer_bed_temp',
@@ -100,6 +103,7 @@ export const allDashboardPanels = [
     'miniconsole',
     'miscellaneous',
     'spoolman',
+    'toolchanger',
     'temperature',
     'webcam',
     'toolcalibration'

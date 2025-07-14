@@ -811,6 +811,10 @@
             "TempTooLow": "Temperature too low for {name}! (min: {min})",
             "TurnHeaterOff": "Turn Heater Off"
         },
+        "ToolchangerPanel": {
+            "Headline": "Toolchanger",
+            "Initialize": "Initialize Toolchanger"
+        },
         "ToolheadControlPanel": {
             "Absolute": "absolute",
             "ALL": "ALL",
