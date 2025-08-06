@@ -2,7 +2,7 @@
     <div class="mb-3">
       <v-row
         v-for="(row, index) in rows" :key="'row_' + index" class="mt-0" dense no-gutters>
-        <v-col v-for="name in row" :key="name" :cols="12 / row.length" class="pa-1">
+        <v-col v-for="name in row" :key="name" :style="'max-width:' + 100/Math.min(length,5) + '%'" class="pa-1">
           <toolchanger-panel-tools-item :name="name" />
         </v-col>
       </v-row>
@@ -26,6 +26,10 @@ export default class ToolchangerPanel extends Mixins(BaseMixin, ToolchangerMixin
         }
 
         return rows
+    }
+
+    get length() {
+      return this.toolchangerToolNames.length
     }
 
 }
