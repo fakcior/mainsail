@@ -15,11 +15,18 @@
                 </template>
                 <v-list dense>
                     <v-list-item v-if="true">
-                        <v-btn small style="width: 100%" @click="sendCmd('INITIALIZE_TOOLCHANGER')">
+                        <v-btn small style="width: 100%" :disabled="printerIsPrinting" @click="sendCmd('INITIALIZE_TOOLCHANGER')">
                             <v-icon left small>{{ mdiSwapVerticalBold }}</v-icon>
                             {{ $t('Panels.ToolchangerPanel.Initialize', { isDefault: '' }) }}
                         </v-btn>
                     </v-list-item>
+                    <v-list-item v-if="true">
+                        <v-btn small style="width: 100%" :disabled="printerIsPrintingOnly" @click="sendCmd('UNSELECT_TOOL')">
+                            <v-icon left small>{{ mdiArrowUpBold }}</v-icon>
+                            {{ $t('Panels.ToolchangerPanel.Unselect', { isDefault: '' }) }}
+                        </v-btn>
+                    </v-list-item>
+
                 </v-list>
             </v-menu>
         </template>
@@ -32,7 +39,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import ToolchangerMixin from '@/components/mixins/toolchanger'
-import { mdiDotsVertical, mdiSwapVerticalBold } from '@mdi/js'
+import { mdiArrowUpBold, mdiDotsVertical, mdiSwapVerticalBold } from '@mdi/js'
 import Panel from '@/components/ui/Panel.vue'
 import { Debounce } from 'vue-debounce-decorator'
 
@@ -42,6 +49,7 @@ import { Debounce } from 'vue-debounce-decorator'
 export default class ToolchangerPanel extends Mixins(BaseMixin, ToolchangerMixin) {
     mdiSwapVerticalBold = mdiSwapVerticalBold
     mdiDotsVertical = mdiDotsVertical
+    mdiArrowUpBold = mdiArrowUpBold
 
     get toolDetails() {
         const types = this.toolchangerFilamentTypes || [];
