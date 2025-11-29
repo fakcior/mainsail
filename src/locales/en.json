@@ -813,7 +813,8 @@
         },
         "ToolchangerPanel": {
             "Headline": "Toolchanger",
-            "Initialize": "Initialize Toolchanger"
+            "Initialize": "Initialize Toolchanger",
+            "Unselect": "Dock active tool"
         },
         "ToolheadControlPanel": {
             "Absolute": "absolute",
