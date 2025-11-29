@@ -83,8 +83,8 @@
                                 :label="$t('Settings.WebcamsTab.Service')" />
                         </v-col>
                     </v-row>
-                    <v-row v-if="['mjpegstreamer-adaptive', 'jmuxer-stream'].includes(webcam.service)">
-                        <v-col class="py-2 col-6">
+                    <v-row v-if="hasTargetFps || hasRotate">
+                        <v-col v-if="hasTargetFps" class="py-2 col-6">
                             <v-text-field
                                 v-model="webcam.target_fps"
                                 outlined
@@ -92,7 +92,7 @@
                                 hide-details
                                 :label="$t('Settings.WebcamsTab.TargetFPS')" />
                         </v-col>
-                        <v-col class="py-2 col-6">
+                        <v-col v-if="hasRotate" class="py-2 col-6">
                             <v-select
                                 v-model="webcam.rotation"
                                 :items="rotationItems"
@@ -228,11 +228,11 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
     @Prop({ type: Object, required: true }) private webcam!: GuiWebcamStateWebcam
     @Prop({ type: String, default: 'create' }) readonly type!: 'create' | 'edit'
 
-    private selectIcon = false
-    private valid = false
-    private oldWebcamName = ''
+    selectIcon = false
+    valid = false
+    oldWebcamName = ''
 
-    private rules = {
+    rules = {
         required: (value: string) => value !== '' || this.$t('Settings.WebcamsTab.Required'),
         unique: (value: string) => !this.existsWebcamName(value) || this.$t('Settings.WebcamsTab.NameAlreadyExists'),
     }
@@ -289,7 +289,7 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
             { value: 'mjpegstreamer', text: this.$t('Settings.WebcamsTab.Mjpegstreamer') },
             { value: 'mjpegstreamer-adaptive', text: this.$t('Settings.WebcamsTab.MjpegstreamerAdaptive') },
             { value: 'uv4l-mjpeg', text: this.$t('Settings.WebcamsTab.Uv4lMjpeg') },
-            { value: 'ipstream', text: this.$t('Settings.WebcamsTab.Ipstream') },
+            { value: 'html-video', text: this.$t('Settings.WebcamsTab.HtmlVideo') },
             { value: 'webrtc-camerastreamer', text: this.$t('Settings.WebcamsTab.WebrtcCameraStreamer') },
             { value: 'webrtc-go2rtc', text: this.$t('Settings.WebcamsTab.WebrtcGo2rtc') },
             { value: 'webrtc-mediamtx', text: this.$t('Settings.WebcamsTab.WebrtcMediaMTX') },
@@ -318,6 +318,25 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
         if (this.selectIcon) classes.push('_rotate-180')
 
         return classes
+    }
+
+    get hasTargetFps() {
+        return ['mjpegstreamer-adaptive', 'jmuxer-stream'].includes(this.webcam.service)
+    }
+
+    get hasRotate() {
+        return [
+            'hlsstream',
+            'html-video',
+            'jmuxer-stream',
+            'mjpegstreamer',
+            'mjpegstreamer-adaptive',
+            'uv4l-mjpeg',
+            'webrtc-camerastreamer',
+            'webrtc-go2rtc',
+            'webrtc-janus',
+            'webrtc-mediamtx',
+        ].includes(this.webcam.service)
     }
 
     get hasFpsCounter() {

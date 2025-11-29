@@ -190,6 +190,13 @@ export const getDefaultState = (): GuiState => {
             hideOtherInstances: false,
         },
         view: {
+            afc: {
+                hiddenExtruders: [],
+                hiddenUnits: [],
+                showFilamentName: false,
+                showLaneInfinite: true,
+                showUnitIcons: true,
+            },
             blockFileUpload: false,
             configfiles: {
                 countPerPage: 10,
@@ -267,6 +274,15 @@ export const getDefaultState = (): GuiState => {
                 countPerPage: 10,
             },
             lockedSliders: [],
+            mmu: {
+                showClogDetection: true,
+                showTtgMap: true,
+                showDetails: true,
+                largeFilamentStatus: false,
+                showLogos: true,
+                showName: true,
+                showUnavailableSpoolColor: false,
+            },
             tempchart: {
                 boolTempchart: true,
                 hiddenDataset: [],

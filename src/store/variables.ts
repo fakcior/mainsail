@@ -64,6 +64,11 @@ export const allowedMetadata = [
     'filament_name',
     'filament_temps',
     'filament_type',
+    'filament_colors',
+    'extruder_colors',
+    'filament_temps',
+    'referenced_tools',
+    'mmu_print',
     'filament_total',
     'filament_colors',
     'filament_weights',
@@ -96,6 +101,7 @@ export const maxGcodeHistory = 50
  * List of generic dashboard panels
  */
 export const allDashboardPanels = [
+    'afc',
     'toolhead-control',
     'extruder-control',
     'macros',
@@ -103,6 +109,7 @@ export const allDashboardPanels = [
     'miniconsole',
     'miscellaneous',
     'spoolman',
+    'mmu',
     'toolchanger',
     'temperature',
     'webcam',
