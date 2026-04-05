@@ -4,11 +4,15 @@ on:
   push:
     branches:
       - 'develop'
-    tags:
-      - 'v*'
+  release:
+    types: [published]
   pull_request:
     branches:
-      - '*'
+      - 'develop'
+    paths:
+      - '.docker/**'
+      - '.dockerignore'
+      - 'Dockerfile'
 
 env:
   REGISTRY: ghcr.io
@@ -23,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Log in to the Container registry
         if: github.event_name != 'pull_request'
@@ -38,12 +42,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
+          tags: &tags |
             type=edge,branch=develop
             type=semver,pattern=v{{major}}
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}.{{minor}}.{{patch}}
             type=sha
+            type=raw,value=latest,enable=${{ github.event_name == 'release' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -52,9 +57,28 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
+          target: runner
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Extract metadata (tags, labels) for unprivileged Docker
+        id: meta-unprivileged
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            suffix=-unprivileged
+          tags: *tags
+
+      - name: Build and push unprivileged Docker image
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          push: ${{ github.event_name != 'pull_request' }}
+          target: unprivileged
+          tags: ${{ steps.meta-unprivileged.outputs.tags }}
+          labels: ${{ steps.meta-unprivileged.outputs.labels }}

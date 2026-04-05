@@ -14,7 +14,7 @@
                         dense />
                 </v-col>
                 <v-col class="offset-4 col-4 d-flex align-center justify-end">
-                    <v-tooltip v-if="selectedJobs.length" top>
+                    <v-tooltip v-if="selectedJobsTable.length" top>
                         <template #activator="{ on, attrs }">
                             <v-btn
                                 color="error"
@@ -25,7 +25,7 @@
                                 <v-icon>{{ mdiDelete }}</v-icon>
                             </v-btn>
                         </template>
-                        <span>{{ $t('History.Delete') }}</span>
+                        <span>{{ $t('Buttons.Delete') }}</span>
                     </v-tooltip>
                     <v-tooltip top>
                         <template #activator="{ on, attrs }">
@@ -90,7 +90,7 @@
                             </v-list-item>
                             <v-divider />
                             <template v-if="printStatusArray.length">
-                                <v-list-item v-for="status of printStatusArray" :key="status.key" class="minHeight36">
+                                <v-list-item v-for="status of printStatusArray" :key="status.name" class="minHeight36">
                                     <v-checkbox
                                         class="mt-0"
                                         hide-details
@@ -118,7 +118,7 @@
         </v-card-text>
         <v-divider class="mb-3" />
         <v-data-table
-            v-model="selectedJobs"
+            v-model="selectedJobsTable"
             :items="entries"
             class="history-jobs-table"
             :headers="filteredHeaders"
@@ -157,15 +157,26 @@
                     @select="select" />
             </template>
         </v-data-table>
-        <history-list-panel-delete-selected-dialog :show="deleteSelectedDialog" @close="deleteSelectedDialog = false" />
-        <history-list-panel-add-maintenance :show="addMaintenanceDialog" @close="addMaintenanceDialog = false" />
+        <confirmation-dialog
+            v-model="deleteSelectedDialog"
+            :title="$t('History.Delete')"
+            :text="deleteSelectedQuestion"
+            :action-button-text="$t('Buttons.Delete')"
+            :icon="mdiDelete"
+            @action="deleteSelectedJobs" />
+        <history-list-panel-add-maintenance v-model="addMaintenanceDialog" />
     </panel>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
-import { HistoryListRowJob, ServerHistoryStateJob } from '@/store/server/history/types'
+import {
+    HistoryListPanelCol,
+    HistoryListRowJob,
+    ServerHistoryStateAllPrintStatusEntry,
+    ServerHistoryStateJob,
+} from '@/store/server/history/types'
 import { caseInsensitiveSort, formatFilesize } from '@/plugins/helpers'
 import Panel from '@/components/ui/Panel.vue'
 import {
@@ -183,25 +194,15 @@ import HistoryListEntryJob from '@/components/panels/History/HistoryListEntryJob
 import HistoryListPanelAddMaintenance from '@/components/dialogs/HistoryListPanelAddMaintenance.vue'
 import { GuiMaintenanceStateEntry, HistoryListRowMaintenance } from '@/store/gui/maintenance/types'
 import HistoryListEntryMaintenance from '@/components/panels/History/HistoryListEntryMaintenance.vue'
-import HistoryListPanelDeleteSelectedDialog from '@/components/dialogs/HistoryListPanelDeleteSelectedDialog.vue'
+import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import HistoryMixin from '@/components/mixins/history'
 import HistoryStatsMixin from '@/components/mixins/historyStats'
 
 export type HistoryListPanelRow = HistoryListRowJob | HistoryListRowMaintenance
 
-export interface HistoryListPanelCol {
-    text: string
-    value: string
-    align: string
-    configable: boolean
-    visible: boolean
-    filterable?: boolean
-    outputType?: string
-}
-
 @Component({
     components: {
-        HistoryListPanelDeleteSelectedDialog,
+        ConfirmationDialog,
         HistoryListEntryMaintenance,
         HistoryListPanelAddMaintenance,
         HistoryListEntryJob,
@@ -232,10 +233,6 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
         return this.$store.state.server.history.all_loaded ?? false
     }
 
-    get jobs() {
-        return this.$store.getters['server/history/getFilteredJobList'] ?? []
-    }
-
     get maintenanceEntries() {
         return this.$store.getters['gui/maintenance/getEntries'] ?? []
     }
@@ -261,14 +258,6 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
         }
 
         return entries
-    }
-
-    get selectedJobs() {
-        return this.$store.state.gui.view.history.selectedJobs ?? []
-    }
-
-    set selectedJobs(newVal) {
-        this.$store.dispatch('gui/saveSettingWithoutUpload', { name: 'view.history.selectedJobs', value: newVal })
     }
 
     get headers() {
@@ -438,22 +427,24 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
         return headers
     }
 
-    get tableFields() {
+    get tableFields(): HistoryListPanelCol[] {
         return this.filteredHeaders.filter(
-            (col: any) => !['filename', 'status'].includes(col.value) && col.value !== ''
+            (col: HistoryListPanelCol) => !['filename', 'status'].includes(col.value) && col.value !== ''
         )
     }
 
-    get configHeaders() {
-        return this.headers.filter((header: any) => header.configable === true)
+    get configHeaders(): HistoryListPanelCol[] {
+        return this.headers.filter((header: HistoryListPanelCol) => header.configable)
     }
 
-    get filteredHeaders() {
-        return this.headers.filter((header: any) => header.visible === true)
+    get filteredHeaders(): HistoryListPanelCol[] {
+        return this.headers.filter((header: HistoryListPanelCol) => header.visible)
     }
 
-    get allPrintStatusArray() {
-        return caseInsensitiveSort(this.$store.getters['server/history/getAllPrintStatusArray'] ?? [], 'name')
+    get allPrintStatusArray(): ServerHistoryStateAllPrintStatusEntry[] {
+        const statuses = this.$store.getters['server/history/getAllPrintStatusArray'] ?? []
+
+        return caseInsensitiveSort(statuses as ServerHistoryStateAllPrintStatusEntry[], 'name')
     }
 
     get countPerPage() {
@@ -465,7 +456,7 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
     }
 
     get hideColums() {
-        return this.$store.state.gui.view.history.hideColums
+        return this.$store.state.gui.view.history.hideColums ?? []
     }
 
     set hideColums(newVal) {
@@ -491,39 +482,52 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
         this.$store.dispatch('gui/saveSetting', { name: 'view.history.showPrintJobs', value: newVal })
     }
 
+    get selectedJobsTable(): HistoryListPanelRow[] {
+        return this.$store.state.gui.view.history.selectedJobs ?? []
+    }
+
+    set selectedJobsTable(newVal: HistoryListPanelRow[]) {
+        this.$store.dispatch('gui/saveSetting', { name: 'view.history.selectedJobs', value: newVal })
+    }
+
     refreshHistory() {
         this.$store.dispatch('socket/addLoading', { name: 'historyLoadAll' })
 
         this.$socket.emit('server.history.list', { start: 0, limit: 50 }, { action: 'server/history/getHistory' })
     }
 
-    sortFiles(items: any[], sortBy: string[], sortDesc: boolean[]) {
-        const sortByClean = sortBy.length ? sortBy[0] : 'filename'
+    sortFiles(items: HistoryListPanelRow[], sortBy: string[], sortDesc: boolean[]) {
+        const sortByClean = (sortBy.length ? sortBy[0] : 'filename') as keyof HistoryListPanelRow
         const sortDescClean = sortDesc[0]
 
-        if (items !== undefined) {
-            // Sort by index
-            items.sort(function (a, b) {
-                if (a[sortByClean] === b[sortByClean]) return 0
-                if (a[sortByClean] === null || a[sortByClean] === undefined) return -1
-                if (b[sortByClean] === null || b[sortByClean] === undefined) return 1
+        if (items === undefined) return []
 
-                if (a[sortByClean].constructor === String && b[sortByClean].constructor === String) {
-                    return a[sortByClean].localeCompare(b[sortByClean], undefined, { sensivity: 'base' })
-                }
+        // Sort by index
+        items.sort((a: HistoryListPanelRow, b: HistoryListPanelRow) => {
+            const valueA = a[sortByClean]
+            const valueB = b[sortByClean]
 
-                if (a[sortByClean] instanceof Array && b[sortByClean] instanceof Array) {
-                    const reducedA = a[sortByClean].length ? a.filament.reduce((a: any, b: any) => a + b) : 0
-                    const reducedB = b[sortByClean].length ? b.filament.reduce((a: any, b: any) => a + b) : 0
-                    return reducedA - reducedB
-                }
+            if (valueA === valueB) return 0
+            if (valueA === null || valueA === undefined) return -1
+            if (valueB === null || valueB === undefined) return 1
 
-                return a[sortByClean] - b[sortByClean]
-            })
+            if (typeof valueA === 'string' && typeof valueB === 'string') {
+                return valueA.localeCompare(valueB, undefined, { sensitivity: 'base' })
+            }
 
-            // Deal with descending order
-            if (sortDescClean) items.reverse()
-        }
+            if (Array.isArray(valueA) && Array.isArray(valueB)) {
+                const reducedA = valueA.reduce((sum: number, current: number) => sum + current, 0)
+                const reducedB = valueB.reduce((sum: number, current: number) => sum + current, 0)
+                return reducedA - reducedB
+            }
+
+            if (typeof valueA === 'number' && typeof valueB === 'number') return valueA - valueB
+
+            return 0
+        })
+
+        // Deal with descending order
+        if (sortDescClean) items.reverse()
 
         return items
     }
@@ -534,19 +538,14 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
 
     changeColumnVisible(name: string) {
         if (this.headers.filter((header) => header.value === name).length) {
-            let value = this.headers.filter((header) => header.value === name)[0].visible
+            const value = this.headers.filter((header) => header.value === name)[0].visible
 
             this.$store.dispatch('gui/setHistoryColumns', { name: name, value: value })
         }
     }
 
-    changeStatusVisible(status: any) {
-        if (status.showInTable) {
-            this.$store.dispatch('gui/hideStatusInHistoryList', status.name)
-            return
-        }
-
-        this.$store.dispatch('gui/showStatusInHistoryList', status.name)
+    changeStatusVisible(status: ServerHistoryStateAllPrintStatusEntry) {
+        this.$store.dispatch('gui/toggleStatusInHistoryList', status.name)
     }
 
     exportHistory() {
@@ -574,8 +573,8 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
         content.push(row)
 
         let jobs = [...this.entries]
-        if (this.selectedJobs.length) {
-            jobs = [...this.selectedJobs]
+        if (this.selectedJobsTable.length) {
+            jobs = [...this.selectedJobsTable]
         }
 
         if (jobs.length) {
@@ -662,36 +661,31 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
     }
 
     outputValue(col: HistoryListPanelCol, job: ServerHistoryStateJob, csvSeperator: string | null = null) {
-        //@ts-ignore
-        let value = col.value in job ? job[col.value] : null
-        if (value === null) value = col.value in job.metadata ? job.metadata[col.value] : null
-
-        if (col.value === 'slicer') {
-            let slicerString = 'slicer' in job.metadata && job.metadata.slicer ? job.metadata.slicer : '--'
-            if ('slicer_version' in job.metadata && job.metadata.slicer_version)
-                slicerString += ' ' + job.metadata.slicer_version
-
-            if (csvSeperator !== null && value.includes(csvSeperator)) return '"' + slicerString + '"'
-
-            return slicerString
+        const key = col.value
+        let value: string | number | null = null
+        if (key in job) {
+            const raw = job[key as keyof ServerHistoryStateJob]
+            if (typeof raw === 'string' || typeof raw === 'number') value = raw
+        } else if (key in job.metadata) {
+            const raw = job.metadata[key]
+            if (typeof raw === 'string' || typeof raw === 'number') value = raw
         }
+        if (key === 'slicer' && 'slicer_version' in job.metadata) value += ` ${job.metadata.slicer_version}`
 
-        if (col.value.startsWith('history_field_')) {
-            const sensorName = col.value.replace('history_field_', '')
+        if (key.startsWith('history_field_')) {
+            const sensorName = key.replace('history_field_', '')
             const sensor = job.auxiliary_data?.find((sensor) => sensor.name === sensorName)
 
-            let value = sensor?.value?.toString()
-
-            // return value, when it is not an array
+            value = sensor?.value?.toString() ?? null
             if (sensor && !Array.isArray(sensor.value)) {
                 value = sensor.value?.toLocaleString(this.browserLocale, { useGrouping: false }) ?? 0
             }
+        }
 
-            // return empty string, when value is null
-            if (!value) return '--'
+        if (value === null) return '--'
 
-            // escape fields with the csvSeperator in the content
-            if (csvSeperator !== null && value?.includes(csvSeperator)) return `"${value}"`
+        if (typeof value === 'string') {
+            if (csvSeperator !== null && value?.includes(csvSeperator)) value = `"${value}"`
 
             return value
         }
@@ -704,19 +698,34 @@ export default class HistoryListPanel extends Mixins(BaseMixin, HistoryMixin, Hi
                 return value?.toFixed() ?? ''
 
             default:
-                switch (typeof value) {
-                    case 'number':
-                        return value?.toLocaleString(this.browserLocale, { useGrouping: false }) ?? 0
-
-                    case 'string':
-                        if (csvSeperator !== null && value.includes(csvSeperator)) value = '"' + value + '"'
-
-                        return value
-
-                    default:
-                        return value
-                }
+                return value?.toLocaleString(this.browserLocale, { useGrouping: false }) ?? 0
         }
+    }
+
+    get deleteSelectedQuestion(): string {
+        if (this.selectedJobsTable.length === 1) return this.$t('History.DeleteSingleJobQuestion').toString()
+
+        return this.$t('History.DeleteSelectedQuestion', { count: this.selectedJobsTable.length }).toString()
+    }
+
+    deleteSelectedJobs() {
+        this.selectedJobsTable.forEach((item: HistoryListPanelRow) => {
+            if (item.type === 'maintenance') {
+                this.$store.dispatch('gui/maintenance/delete', item.id)
+                return
+            }
+
+            // break if job_id is not present
+            if (!('job_id' in item)) return
+
+            this.$socket.emit(
+                'server.history.delete_job',
+                { uid: item.job_id },
+                { action: 'server/history/getDeletedJobs' }
+            )
+        })
+
+        this.selectedJobsTable = []
     }
 }
 </script>

@@ -1,39 +1,13 @@
 <template>
     <v-row
-        v-longpress:600="(e) => openContextMenu(e)"
+        v-longpress:600="openContextMenu"
         class="jobqueue-list-entry d-flex flex-row flex-nowrap cursor-pointer"
         @contextmenu="openContextMenu($event)">
         <v-col v-if="showHandle" class="col-auto d-flex flex-column justify-center pr-0 py-0">
             <v-icon class="handle">{{ mdiDragVertical }}</v-icon>
         </v-col>
         <v-col class="col-auto d-flex flex-column justify-center pr-0 py-0">
-            <v-tooltip
-                v-if="smallThumbnail"
-                top
-                :disabled="!bigThumbnail"
-                content-class="tooltip__content-opacity1"
-                :color="bigThumbnailTooltipColor">
-                <template #activator="{ on, attrs }">
-                    <vue-load-image>
-                        <img
-                            slot="image"
-                            :src="smallThumbnail"
-                            :width="32"
-                            :height="32"
-                            :alt="job.filename"
-                            v-bind="attrs"
-                            v-on="on" />
-                        <div slot="preloader">
-                            <v-progress-circular indeterminate color="primary" />
-                        </div>
-                        <div slot="error">
-                            <v-icon>{{ mdiFile }}</v-icon>
-                        </div>
-                    </vue-load-image>
-                </template>
-                <span><img :src="bigThumbnail" :width="250" :alt="job.filename" /></span>
-            </v-tooltip>
-            <v-icon v-else>{{ mdiFile }}</v-icon>
+            <gcodefiles-thumbnail :item="job" />
         </v-col>
         <v-col class="py-1" style="min-width: 0; font-size: 0.875em">
             <div class="text-truncate">
@@ -65,21 +39,24 @@
                 </v-list-item>
             </v-list>
         </v-menu>
-        <jobqueue-entry-change-count-dialog
-            :show="showChangeCountDialog"
-            :job="job"
-            @close="showChangeCountDialog = false" />
+        <jobqueue-entry-change-count-dialog v-model="showChangeCountDialog" :job="job" />
     </v-row>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins, Prop } from 'vue-property-decorator'
+import type { LongpressEvent } from '@/directives/longpress'
 import BaseMixin from '@/components/mixins/base'
 import { ServerJobQueueStateJob } from '@/store/server/jobQueue/types'
 import { mdiCloseThick, mdiCounter, mdiDragVertical, mdiFile, mdiPlay, mdiPlaylistRemove } from '@mdi/js'
 import { defaultBigThumbnailBackground } from '@/store/variables'
-@Component
+import GcodefilesThumbnail from '@/components/panels/Gcodefiles/GcodefilesThumbnail.vue'
+import { CLOSE_CONTEXT_MENU, EventBus } from '@/plugins/eventBus'
+
+@Component({
+    components: { GcodefilesThumbnail },
+})
 export default class StatusPanelJobqueueEntry extends Mixins(BaseMixin) {
     mdiCloseThick = mdiCloseThick
     mdiCounter = mdiCounter
@@ -181,17 +158,18 @@ export default class StatusPanelJobqueueEntry extends Mixins(BaseMixin) {
         return this.bigThumbnailBackground
     }
 
-    openContextMenu(e: any) {
+    openContextMenu(e: MouseEvent | LongpressEvent) {
         e?.preventDefault()
+        EventBus.$emit(CLOSE_CONTEXT_MENU)
 
-        if (this.showContextMenu) {
-            this.showContextMenu = false
-            return
-        }
-
-        this.showContextMenu = true
         this.contextMenuX = e?.clientX || e?.pageX || window.screenX / 2
         this.contextMenuY = e?.clientY || e?.pageY || window.screenY / 2
+
+        this.showContextMenu = true
+    }
+
+    closeContextMenu() {
+        this.showContextMenu = false
     }
 
     printJob() {
@@ -206,6 +184,14 @@ export default class StatusPanelJobqueueEntry extends Mixins(BaseMixin) {
         const ids = [...(this.job.combinedIds ?? []), this.job.job_id]
 
         this.$store.dispatch('server/jobQueue/deleteFromQueue', ids)
+    }
+
+    mounted() {
+        EventBus.$on(CLOSE_CONTEXT_MENU, this.closeContextMenu)
+    }
+
+    beforeDestroy() {
+        EventBus.$off(CLOSE_CONTEXT_MENU, this.closeContextMenu)
     }
 }
 </script>

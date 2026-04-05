@@ -17,7 +17,7 @@
                             hide-details
                             dense
                             attach=".machine-configfiles-panel__root-select"
-                            @change="changeRoot"></v-select>
+                            @change="changeRoot" />
                     </v-col>
                     <v-col class="col col-lg-auto pl-lg-0 text-right">
                         <input ref="fileUpload" type="file" style="display: none" multiple @change="uploadFile" />
@@ -47,14 +47,14 @@
                                         v-model="showHiddenFiles"
                                         class="mt-0"
                                         hide-details
-                                        :label="$t('Machine.ConfigFilesPanel.HiddenFiles')"></v-checkbox>
+                                        :label="$t('Machine.ConfigFilesPanel.HiddenFiles')" />
                                 </v-list-item>
                                 <v-list-item class="minHeight36">
                                     <v-checkbox
                                         v-model="hideBackupFiles"
                                         class="mt-0"
                                         hide-details
-                                        :label="$t('Machine.ConfigFilesPanel.HideBackupFiles')"></v-checkbox>
+                                        :label="$t('Machine.ConfigFilesPanel.HideBackupFiles')" />
                                 </v-list-item>
                             </v-list>
                         </v-menu>
@@ -71,7 +71,7 @@
                                 :base-directory-label="`/${root}`"
                                 :on-segment-click="clickPathNavGoToDirectory" />
                         </span>
-                        <v-spacer></v-spacer>
+                        <v-spacer />
                         <template v-if="disk_usage !== null && !showMissingConfigRootWarning">
                             <v-tooltip top>
                                 <template #activator="{ on, attrs }">
@@ -93,7 +93,7 @@
                     </v-col>
                 </v-row>
             </v-card-text>
-            <v-divider></v-divider>
+            <v-divider />
             <v-data-table
                 v-if="!showMissingConfigRootWarning"
                 v-model="selectedFiles"
@@ -125,7 +125,7 @@
                         @dragleave="dragLeaveFilelist"
                         @drop.prevent.stop="dragDropFilelist($event, { isDirectory: true, filename: '..' })">
                         <td class="file-list__select-td pr-0">
-                            <v-simple-checkbox v-ripple disabled class="pa-0 mr-0"></v-simple-checkbox>
+                            <v-simple-checkbox v-ripple disabled class="pa-0 mr-0" />
                         </td>
                         <td class="px-0 text-center" style="width: 32px">
                             <v-icon>{{ mdiFolderUpload }}</v-icon>
@@ -137,7 +137,7 @@
                 <template #item="{ index, item, isSelected, select }">
                     <tr
                         :key="`${index} ${item.filename}`"
-                        v-longpress:600="(e) => showContextMenu(e, item)"
+                        v-longpress:600="{ handler: showContextMenu, args: [item] }"
                         class="file-list-cursor user-select-none"
                         :data-name="item.filename"
                         draggable="true"
@@ -153,7 +153,7 @@
                                 v-ripple
                                 :value="isSelected"
                                 class="pa-0 mr-0"
-                                @click.stop="select(!isSelected)"></v-simple-checkbox>
+                                @click.stop="select(!isSelected)" />
                         </td>
                         <td class="px-0 text-center" style="width: 32px">
                             <v-icon v-if="item.isDirectory">{{ mdiFolder }}</v-icon>
@@ -219,14 +219,14 @@
                     class="red--text"
                     @click="deleteDialog = true">
                     <v-icon class="mr-1" color="error">{{ mdiDelete }}</v-icon>
-                    {{ $t('Machine.ConfigFilesPanel.Delete') }}
+                    {{ $t('Buttons.Delete') }}
                 </v-list-item>
                 <v-list-item
                     v-if="contextMenu.item.isDirectory && contextMenu.item.permissions.includes('w')"
                     class="red--text"
                     @click="deleteDirectory(contextMenu.item)">
                     <v-icon class="mr-1" color="error">{{ mdiDelete }}</v-icon>
-                    {{ $t('Machine.ConfigFilesPanel.Delete') }}
+                    {{ $t('Buttons.Delete') }}
                 </v-list-item>
             </v-list>
         </v-menu>
@@ -283,13 +283,13 @@
                         :label="$t('Machine.ConfigFilesPanel.Name')"
                         required
                         :rules="nameInputRules"
-                        @update:error="(bool) => (isInvalidName = bool)"
-                        @keyup.enter="createFileAction"></v-text-field>
+                        @update:error="setIsInvalidName"
+                        @keyup.enter="createFileAction" />
                 </v-card-text>
                 <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-spacer />
                     <v-btn color="" text @click="dialogCreateFile.show = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
+                        {{ $t('Buttons.Cancel') }}
                     </v-btn>
                     <v-btn :disabled="isInvalidName" color="primary" text @click="createFileAction">
                         {{ $t('Machine.ConfigFilesPanel.Create') }}
@@ -314,13 +314,13 @@
                         :label="$t('Machine.ConfigFilesPanel.Name')"
                         required
                         :rules="nameInputRules"
-                        @update:error="(bool) => (isInvalidName = bool)"
-                        @keyup.enter="renameFileAction"></v-text-field>
+                        @update:error="setIsInvalidName"
+                        @keyup.enter="renameFileAction" />
                 </v-card-text>
                 <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-spacer />
                     <v-btn color="" text @click="dialogRenameFile.show = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
+                        {{ $t('Buttons.Cancel') }}
                     </v-btn>
                     <v-btn :disabled="isInvalidName" color="primary" text @click="renameFileAction">
                         {{ $t('Machine.ConfigFilesPanel.Rename') }}
@@ -340,18 +340,18 @@
                 </template>
                 <v-card-text>
                     <v-text-field
-                        ref="inputDialoDuplicateFileName"
+                        ref="inputDialogDuplicateFileName"
                         v-model="dialogDuplicateFile.newName"
                         :label="$t('Machine.ConfigFilesPanel.Name')"
                         required
                         :rules="nameInputRules"
-                        @update:error="(bool) => (isInvalidName = bool)"
+                        @update:error="setIsInvalidName"
                         @keyup.enter="duplicateFileAction" />
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
                     <v-btn color="" text @click="dialogDuplicateFile.show = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
+                        {{ $t('Buttons.Cancel') }}
                     </v-btn>
                     <v-btn :disabled="isInvalidName" color="primary" text @click="duplicateFileAction">
                         {{ $t('Machine.ConfigFilesPanel.Duplicate') }}
@@ -376,13 +376,13 @@
                         :label="$t('Machine.ConfigFilesPanel.Name')"
                         required
                         :rules="nameInputRules"
-                        @update:error="(bool) => (isInvalidName = bool)"
-                        @keyup.enter="createDirectoryAction"></v-text-field>
+                        @update:error="setIsInvalidName"
+                        @keyup.enter="createDirectoryAction" />
                 </v-card-text>
                 <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-spacer />
                     <v-btn color="" text @click="dialogCreateDirectory.show = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
+                        {{ $t('Buttons.Cancel') }}
                     </v-btn>
                     <v-btn :disabled="isInvalidName" color="primary" text @click="createDirectoryAction">
                         {{ $t('Machine.ConfigFilesPanel.Create') }}
@@ -407,13 +407,13 @@
                         :label="$t('Machine.ConfigFilesPanel.Name')"
                         required
                         :rules="nameInputRules"
-                        @update:error="(bool) => (isInvalidName = bool)"
-                        @keyup.enter="renameDirectoryAction"></v-text-field>
+                        @update:error="setIsInvalidName"
+                        @keyup.enter="renameDirectoryAction" />
                 </v-card-text>
                 <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-spacer />
                     <v-btn color="" text @click="dialogRenameDirectory.show = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
+                        {{ $t('Buttons.Cancel') }}
                     </v-btn>
                     <v-btn :disabled="isInvalidName" color="primary" text @click="renameDirectoryAction">
                         {{ $t('Machine.ConfigFilesPanel.Rename') }}
@@ -421,101 +421,30 @@
                 </v-card-actions>
             </panel>
         </v-dialog>
-        <v-dialog v-model="dialogDeleteDirectory.show" max-width="400">
-            <panel
-                :title="$t('Machine.ConfigFilesPanel.DeleteDirectory')"
-                card-class="maschine-configfiles-delete-directory-dialog"
-                :margin-bottom="false">
-                <template #buttons>
-                    <v-btn icon tile @click="dialogDeleteDirectory.show = false">
-                        <v-icon>{{ mdiCloseThick }}</v-icon>
-                    </v-btn>
-                </template>
-                <v-card-text>
-                    <p class="mb-0">
-                        {{
-                            $t('Machine.ConfigFilesPanel.DeleteDirectoryQuestion', {
-                                name: dialogDeleteDirectory.item.filename,
-                            })
-                        }}
-                    </p>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="" text @click="dialogDeleteDirectory.show = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
-                    </v-btn>
-                    <v-btn color="error" text @click="deleteDirectoryAction">
-                        {{ $t('Machine.ConfigFilesPanel.Delete') }}
-                    </v-btn>
-                </v-card-actions>
-            </panel>
-        </v-dialog>
+        <confirmation-dialog
+            v-model="dialogDeleteDirectory.show"
+            :title="$t('Machine.ConfigFilesPanel.DeleteDirectory')"
+            :text="
+                $t('Machine.ConfigFilesPanel.DeleteDirectoryQuestion', {
+                    name: dialogDeleteDirectory.item.filename,
+                })
+            "
+            :action-button-text="$t('Buttons.Delete')"
+            @action="deleteDirectoryAction" />
+        <confirmation-dialog
+            v-model="deleteDialog"
+            :title="$t('Buttons.Delete')"
+            :text="$t('Machine.ConfigFilesPanel.DeleteSingleFileQuestion', { name: contextMenu.item.filename })"
+            :action-button-text="$t('Buttons.Delete')"
+            @action="removeFile" />
+        <confirmation-dialog
+            v-model="deleteSelectedDialog"
+            :title="$t('Buttons.Delete')"
+            :text="deleteSelectedDialogText"
+            :action-button-text="$t('Buttons.Delete')"
+            @action="deleteSelectedFiles" />
 
-        <!-- CONFIRM DELETE SINGLE FILE DIALOG -->
-        <v-dialog v-model="deleteDialog" max-width="400">
-            <panel
-                :title="$t('Machine.ConfigFilesPanel.Delete')"
-                card-class="maschine-configfiles-delete-dialog"
-                :margin-bottom="false">
-                <template #buttons>
-                    <v-btn icon tile @click="deleteDialog = false">
-                        <v-icon>{{ mdiCloseThick }}</v-icon>
-                    </v-btn>
-                </template>
-                <v-card-text>
-                    <p class="mb-0">
-                        {{
-                            $t('Machine.ConfigFilesPanel.DeleteSingleFileQuestion', { name: contextMenu.item.filename })
-                        }}
-                    </p>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="" text @click="deleteDialog = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
-                    </v-btn>
-                    <v-btn color="error" text @click="removeFile">
-                        {{ $t('Machine.ConfigFilesPanel.Delete') }}
-                    </v-btn>
-                </v-card-actions>
-            </panel>
-        </v-dialog>
-
-        <!-- CONFIRM DELETE MULTIPLE FILES DIALOG -->
-        <v-dialog v-model="deleteSelectedDialog" max-width="400">
-            <panel
-                :title="$t('Machine.ConfigFilesPanel.Delete')"
-                card-class="maschine-configfiles-delete-selected-dialog"
-                :margin-bottom="false">
-                <template #buttons>
-                    <v-btn icon tile @click="deleteSelectedDialog = false">
-                        <v-icon>{{ mdiCloseThick }}</v-icon>
-                    </v-btn>
-                </template>
-                <v-card-text>
-                    <p v-if="selectedFiles.length === 1" class="mb-0">
-                        {{
-                            $t('Machine.ConfigFilesPanel.DeleteSingleFileQuestion', { name: selectedFiles[0].filename })
-                        }}
-                    </p>
-                    <p v-else class="mb-0">
-                        {{ $t('Machine.ConfigFilesPanel.DeleteSelectedQuestion', { count: selectedFiles.length }) }}
-                    </p>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="" text @click="deleteSelectedDialog = false">
-                        {{ $t('Machine.ConfigFilesPanel.Cancel') }}
-                    </v-btn>
-                    <v-btn color="error" text @click="deleteSelectedFiles">
-                        {{ $t('Machine.ConfigFilesPanel.Delete') }}
-                    </v-btn>
-                </v-card-actions>
-            </panel>
-        </v-dialog>
-
-        <v-snackbar v-model="uploadSnackbar.status" :timeout="-1" :value="true" fixed right bottom>
+        <v-snackbar v-model="uploadSnackbar.status" :timeout="-1" fixed right bottom>
             <span v-if="uploadSnackbar.max > 1" class="mr-1">
                 ({{ uploadSnackbar.number }}/{{ uploadSnackbar.max }})
             </span>
@@ -523,7 +452,7 @@
             <br />
             {{ Math.round(uploadSnackbar.percent) }} % @ {{ formatFilesize(Math.round(uploadSnackbar.speed)) }}/s
             <br />
-            <v-progress-linear class="mt-2" :value="uploadSnackbar.percent"></v-progress-linear>
+            <v-progress-linear class="mt-2" :value="uploadSnackbar.percent" />
             <template #action="{ attrs }">
                 <v-btn color="red" text v-bind="attrs" style="min-width: auto" @click="cancelUpload">
                     <v-icon class="0">{{ mdiClose }}</v-icon>
@@ -534,12 +463,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Ref } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import ThemeMixin from '@/components/mixins/theme'
-import { escapePath, formatFilesize, sortFiles } from '@/plugins/helpers'
+import { escapePath, formatFilesize, generateTimestamp, sortFiles } from '@/plugins/helpers'
 import { FileStateFile, FileStateGcodefile } from '@/store/files/types'
 import axios from 'axios'
+import type { CancelTokenSource } from 'axios'
 import Panel from '@/components/ui/Panel.vue'
 import PathNavigation from '@/components/ui/PathNavigation.vue'
 import { hiddenRootDirectories } from '@/store/variables'
@@ -562,6 +492,9 @@ import {
     mdiLockOutline,
     mdiContentCopy,
 } from '@mdi/js'
+import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
+import type { FocusableRef } from '@/types/vuetify'
+import type { LongpressEvent } from '@/directives/longpress'
 
 interface contextMenu {
     shown: boolean
@@ -600,7 +533,7 @@ interface uploadSnackbar {
     total: number
     number: number
     max: number
-    cancelTokenSource: any
+    cancelTokenSource: CancelTokenSource | null
 }
 
 interface draggingFile {
@@ -608,7 +541,7 @@ interface draggingFile {
 }
 
 @Component({
-    components: { Panel, PathNavigation },
+    components: { ConfirmationDialog, Panel, PathNavigation },
 })
 export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     mdiInformation = mdiInformation
@@ -628,17 +561,16 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     sortFiles = sortFiles
     formatFilesize = formatFilesize
 
-    declare $refs: {
-        fileUpload: HTMLInputElement
-        inputDialogCreateFileName: HTMLInputElement
-        inputDialogRenameFileName: HTMLInputElement
-        inputDialogDuplicateFileName: HTMLInputElement
-        inputDialogCreateDirectoryName: HTMLInputElement
-        inputDialogRenameDirectoryName: HTMLInputElement
-    }
+    @Ref() readonly inputDialogCreateFileName!: FocusableRef
+    @Ref() readonly inputDialogRenameFileName!: FocusableRef
+    @Ref() readonly inputDialogDuplicateFileName!: FocusableRef
+    @Ref() readonly inputDialogCreateDirectoryName!: FocusableRef
+    @Ref() readonly inputDialogRenameDirectoryName!: FocusableRef
+    @Ref() readonly fileUpload!: HTMLInputElement
 
-    private currentPage = 1
-    private contextMenu: contextMenu = {
+    currentPage = 1
+
+    contextMenu: contextMenu = {
         shown: false,
         isDirectory: false,
         touchTimer: null,
@@ -651,7 +583,8 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             modified: new Date(),
         },
     }
-    private dialogImage: dialogImageObject = {
+
+    dialogImage: dialogImageObject = {
         show: false,
         item: {
             name: null,
@@ -659,11 +592,13 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             svg: null,
         },
     }
-    private dialogCreateFile = {
+
+    dialogCreateFile = {
         show: false,
         name: '',
     }
-    private dialogRenameFile: dialogRenameObject = {
+
+    dialogRenameFile: dialogRenameObject = {
         show: false,
         newName: '',
         item: {
@@ -673,7 +608,8 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             modified: new Date(),
         },
     }
-    private dialogDuplicateFile: dialogRenameObject = {
+
+    dialogDuplicateFile: dialogRenameObject = {
         show: false,
         newName: '',
         item: {
@@ -683,11 +619,13 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             modified: new Date(),
         },
     }
-    private dialogCreateDirectory = {
+
+    dialogCreateDirectory = {
         show: false,
         name: '',
     }
-    private dialogRenameDirectory: dialogRenameObject = {
+
+    dialogRenameDirectory: dialogRenameObject = {
         show: false,
         newName: '',
         item: {
@@ -697,7 +635,8 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             modified: new Date(),
         },
     }
-    private dialogDeleteDirectory: dialogDeleteObject = {
+
+    dialogDeleteDirectory: dialogDeleteObject = {
         show: false,
         item: {
             isDirectory: false,
@@ -706,7 +645,8 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             modified: new Date(),
         },
     }
-    private uploadSnackbar: uploadSnackbar = {
+
+    uploadSnackbar: uploadSnackbar = {
         status: false,
         filename: '',
         percent: 0,
@@ -714,9 +654,10 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         total: 0,
         number: 0,
         max: 0,
-        cancelTokenSource: {},
+        cancelTokenSource: null,
     }
-    private draggingFile: draggingFile = {
+
+    draggingFile: draggingFile = {
         item: {
             isDirectory: false,
             filename: '',
@@ -725,11 +666,11 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         },
     }
 
-    private deleteDialog = false
-    private deleteSelectedDialog = false
+    deleteDialog = false
+    deleteSelectedDialog = false
 
-    private isInvalidName = true
-    private nameInputRules = [
+    isInvalidName = true
+    nameInputRules = [
         (value: string) => !!value || this.$t('Files.InvalidNameEmpty'),
         (value: string) => !this.existsFilename(value) || this.$t('Files.InvalidNameAlreadyExists'),
     ]
@@ -743,7 +684,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     set blockFileUpload(newVal) {
-        this.$store.dispatch('gui/saveSettingWithoutUpload', { name: 'view.blockFileUpload', value: newVal })
+        this.$store.dispatch('gui/saveSetting', { name: 'view.blockFileUpload', value: newVal })
     }
 
     get toolbarButtons() {
@@ -760,7 +701,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
                 },
             },
             {
-                text: this.$t('Machine.ConfigFilesPanel.Delete'),
+                text: this.$t('Buttons.Delete'),
                 color: 'error',
                 icon: mdiDelete,
                 loadingName: null,
@@ -806,7 +747,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
                 condition: true,
                 click: this.refreshFileList,
             },
-        ].filter((rule: any) => rule.condition)
+        ].filter((rule) => rule.condition)
     }
 
     get filteredToolbarButtons() {
@@ -870,7 +811,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     set selectedFiles(newVal) {
-        this.$store.dispatch('gui/saveSettingWithoutUpload', { name: 'view.configfiles.selectedFiles', value: newVal })
+        this.$store.dispatch('gui/saveSetting', { name: 'view.configfiles.selectedFiles', value: newVal })
     }
 
     get countPerPage() {
@@ -945,7 +886,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     set root(newVal) {
-        this.$store.dispatch('gui/saveSettingWithoutUpload', { name: 'view.configfiles.rootPath', value: newVal })
+        this.$store.dispatch('gui/saveSetting', { name: 'view.configfiles.rootPath', value: newVal })
     }
 
     get currentPath() {
@@ -955,7 +896,19 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     set currentPath(newVal) {
         this.selectedFiles = []
 
-        this.$store.dispatch('gui/saveSettingWithoutUpload', { name: 'view.configfiles.currentPath', value: newVal })
+        this.$store.dispatch('gui/saveSetting', { name: 'view.configfiles.currentPath', value: newVal })
+    }
+
+    get deleteSelectedDialogText(): string {
+        if (this.selectedFiles.length === 1) {
+            return this.$t('Machine.ConfigFilesPanel.DeleteSingleFileQuestion', {
+                name: this.selectedFiles[0].filename,
+            }).toString()
+        }
+
+        return this.$t('Machine.ConfigFilesPanel.DeleteSelectedQuestion', {
+            count: this.selectedFiles.length,
+        }).toString()
     }
 
     refreshFileList() {
@@ -971,42 +924,45 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     clickRow(item: FileStateFile, force = false) {
-        if (!this.contextMenu.shown || force) {
-            if (force) this.contextMenu.shown = false
+        if (this.contextMenu.shown && !force) return
+        if (force) this.contextMenu.shown = false
 
-            if (!item.isDirectory) {
-                if (
-                    ['png', 'jpeg', 'jpg', 'gif', 'bmp', 'tif', 'svg'].includes(
-                        item.filename.split('.').pop()?.toLowerCase() ?? ''
-                    )
-                ) {
-                    const url = `${this.apiUrl}/server/files${this.absolutePath}/${item.filename}?t=${Date.now()}`
-                    this.dialogImage.item.name = item.filename
-                    if (['svg'].includes(item.filename.split('.').pop()?.toLowerCase() ?? '')) {
-                        fetch(url)
-                            .then((res) => res.text())
-                            .then((svg) => {
-                                this.dialogImage.show = true
-                                this.dialogImage.item.svg = svg
-                            })
-                    } else {
-                        this.dialogImage.show = true
-                        this.dialogImage.item.url = url
-                    }
-                } else {
-                    this.$store.dispatch('editor/openFile', {
-                        root: this.root,
-                        path: this.currentPath,
-                        filename: item.filename,
-                        size: item.size,
-                        permissions: item.permissions,
-                    })
-                }
-            } else {
-                this.currentPath += '/' + item.filename
-                this.currentPage = 1
-            }
+        if (item.isDirectory) {
+            this.currentPath += '/' + item.filename
+            this.currentPage = 1
+
+            return
         }
+
+        const extension = item.filename.split('.').pop()?.toLowerCase() ?? ''
+        const url = `${this.apiUrl}/server/files${this.absolutePath}/${item.filename}?t=${Date.now()}`
+
+        if (extension === 'svg') {
+            fetch(url)
+                .then((res) => res.text())
+                .then((svg) => {
+                    this.dialogImage.show = true
+                    this.dialogImage.item.name = item.filename
+                    this.dialogImage.item.svg = svg
+                })
+
+            return
+        }
+
+        if (['png', 'jpeg', 'jpg', 'gif', 'bmp', 'tif'].includes(extension)) {
+            this.dialogImage.show = true
+            this.dialogImage.item.name = item.filename
+            this.dialogImage.item.url = url
+            return
+        }
+
+        this.$store.dispatch('editor/openFile', {
+            root: this.root,
+            path: this.currentPath,
+            filename: item.filename,
+            size: item.size,
+            permissions: item.permissions,
+        })
     }
 
     clickRowGoBack() {
@@ -1017,28 +973,37 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         this.currentPath = segment.location
     }
 
-    showContextMenu(e: any, item: FileStateFile) {
-        if (!this.contextMenu.shown) {
-            e?.preventDefault()
-            this.contextMenu.shown = true
-            this.contextMenu.x = e?.clientX || e?.pageX || window.screenX / 2
-            this.contextMenu.y = e?.clientY || e?.pageY || window.screenY / 2
-            this.contextMenu.item = item
-
-            this.$nextTick(() => {
-                this.contextMenu.shown = true
-            })
-        }
+    setIsInvalidName(bool: boolean) {
+        this.isInvalidName = bool
     }
 
-    downloadFile() {
-        const filename = this.absolutePath + '/' + this.contextMenu.item.filename
-        const href = `${this.apiUrl}/server/files${escapePath(filename)}`
+    showContextMenu(e: MouseEvent | LongpressEvent, item: FileStateFile) {
+        e?.preventDefault()
+        this.contextMenu.x = e?.clientX || e?.pageX || window.screenX / 2
+        this.contextMenu.y = e?.clientY || e?.pageY || window.screenY / 2
+        this.contextMenu.item = item
+        this.contextMenu.shown = true
+    }
+
+    private startDownloadFile(filename: string) {
+        const filepath = `${this.absolutePath}/${filename}`
+        const href = `${this.apiUrl}/server/files${escapePath(filepath)}`
         window.open(href)
     }
 
+    downloadFile() {
+        this.startDownloadFile(this.contextMenu.item.filename)
+        this.contextMenu.shown = false
+    }
+
     async downloadSelectedFiles() {
-        let items: string[] = []
+        if (this.selectedFiles.length === 1) {
+            this.startDownloadFile(this.selectedFiles[0].filename)
+            this.selectedFiles = []
+            return
+        }
+
+        const items: string[] = []
 
         const addElementToItems = async (absolutPath: string, directory: FileStateFile[]) => {
             for (const file of directory) {
@@ -1056,17 +1021,9 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
 
         await addElementToItems(this.absolutePath, this.selectedFiles)
 
-        const date = new Date()
-        const month = (date.getMonth() + 1).toString().padStart(2, '0')
-        const day = date.getDate().toString().padStart(2, '0')
-        const hours = date.getHours().toString().padStart(2, '0')
-        const minutes = date.getMinutes().toString().padStart(2, '0')
-        const seconds = date.getSeconds().toString().padStart(2, '0')
-        const timestamp = `${date.getFullYear()}${month}${day}-${hours}${minutes}${seconds}`
-
         this.$socket.emit(
             'server.files.zip',
-            { items, dest: `config/${this.root}-${timestamp}.zip` },
+            { items, dest: `config/${this.root}-${generateTimestamp()}.zip` },
             { action: 'files/downloadZip', loading: 'configDownloadZip' }
         )
 
@@ -1078,7 +1035,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         this.dialogCreateDirectory.show = true
 
         setTimeout(() => {
-            this.$refs.inputDialogCreateDirectoryName?.focus()
+            this.inputDialogCreateDirectoryName?.focus()
         }, 200)
     }
 
@@ -1100,7 +1057,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         this.dialogRenameDirectory.show = true
 
         setTimeout(() => {
-            this.$refs.inputDialogRenameDirectoryName?.focus()
+            this.inputDialogRenameDirectoryName?.focus()
         }, 200)
     }
 
@@ -1122,7 +1079,6 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     deleteDirectoryAction() {
-        this.dialogDeleteDirectory.show = false
         this.$socket.emit(
             'server.files.delete_directory',
             { path: this.absolutePath + '/' + this.dialogDeleteDirectory.item.filename, force: true },
@@ -1135,14 +1091,14 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         this.dialogCreateFile.show = true
 
         setTimeout(() => {
-            this.$refs.inputDialogCreateFileName?.focus()
+            this.inputDialogCreateFileName?.focus()
         }, 200)
     }
 
     createFileAction() {
         const file = new File([''], this.dialogCreateFile.name)
 
-        let formData = new FormData()
+        const formData = new FormData()
         formData.append('file', file)
         formData.append('root', this.root)
         if (this.currentPath.length) formData.append('path', this.currentPath.slice(1))
@@ -1169,7 +1125,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         this.dialogRenameFile.show = true
 
         setTimeout(() => {
-            this.$refs.inputDialogRenameFileName?.focus()
+            this.inputDialogRenameFileName?.focus()
         }, 200)
     }
 
@@ -1191,7 +1147,7 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         this.dialogDuplicateFile.show = true
 
         setTimeout(() => {
-            this.$refs.inputDialogDuplicateFileName?.focus()
+            this.inputDialogDuplicateFileName?.focus()
         }, 200)
     }
 
@@ -1209,8 +1165,6 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             { path: this.absolutePath + '/' + this.contextMenu.item.filename },
             { action: 'files/getDeleteFile' }
         )
-
-        this.deleteDialog = false
     }
 
     deleteSelectedFiles() {
@@ -1231,41 +1185,40 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         })
 
         this.selectedFiles = []
-        this.deleteSelectedDialog = false
     }
 
     uploadFileButton() {
-        this.$refs.fileUpload.click()
+        this.fileUpload.click()
     }
 
     async uploadFile() {
-        if (this.$refs.fileUpload.files?.length) {
-            const files = [...this.$refs.fileUpload.files]
-            this.$refs.fileUpload.value = ''
+        const files = [...(this.fileUpload.files ?? [])]
+        if (files.length === 0) return
 
-            await this.$store.dispatch('socket/addLoading', { name: 'configFileUpload' })
-            await this.$store.dispatch('files/uploadSetCurrentNumber', 0)
-            await this.$store.dispatch('files/uploadSetMaxNumber', this.$refs.fileUpload.files.length)
+        this.fileUpload.value = ''
 
-            for (const file of files) {
-                await this.$store.dispatch('files/uploadIncrementCurrentNumber')
-                const path = this.currentPath.slice(0, 1) === '/' ? this.currentPath.slice(1) : this.currentPath
-                const result = await this.$store.dispatch('files/uploadFile', {
-                    file,
-                    path,
-                    root: 'config',
-                })
+        await this.$store.dispatch('socket/addLoading', { name: 'configFileUpload' })
+        await this.$store.dispatch('files/uploadSetCurrentNumber', 0)
+        await this.$store.dispatch('files/uploadSetMaxNumber', files.length)
 
-                if (result !== false)
-                    this.$toast.success(this.$t('Files.SuccessfullyUploaded', { filename: result }).toString())
-            }
+        for (const file of files) {
+            await this.$store.dispatch('files/uploadIncrementCurrentNumber')
+            const path = this.currentPath.slice(0, 1) === '/' ? this.currentPath.slice(1) : this.currentPath
+            const result = await this.$store.dispatch('files/uploadFile', {
+                file,
+                path,
+                root: 'config',
+            })
 
-            await this.$store.dispatch('socket/removeLoading', { name: 'configFileUpload' })
+            if (result !== false)
+                this.$toast.success(this.$t('Files.SuccessfullyUploaded', { filename: result }).toString())
         }
+
+        await this.$store.dispatch('socket/removeLoading', { name: 'configFileUpload' })
     }
 
     cancelUpload() {
-        this.uploadSnackbar.cancelTokenSource.cancel()
+        this.uploadSnackbar.cancelTokenSource?.cancel()
         this.uploadSnackbar.status = false
     }
 
@@ -1286,44 +1239,42 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
         }
     }
 
-    dragOverFilelist(e: any, row: any) {
-        if (this.blockFileUpload) {
-            e.preventDefault()
-            //e.stopPropagation()
+    dragOverFilelist(e: DragEvent, row: FileStateFile) {
+        if (!this.blockFileUpload) return
+        e.preventDefault()
 
-            if (row.isDirectory) e.target.parentElement.style.backgroundColor = '#43A04720'
-        }
+        const parentElement = (e.target as HTMLElement | null)?.parentElement
+        if (row.isDirectory && parentElement) parentElement.style.backgroundColor = '#43A04720'
     }
 
-    dragLeaveFilelist(e: any) {
-        if (this.blockFileUpload) {
-            e.preventDefault()
-            e.stopPropagation()
+    dragLeaveFilelist(e: DragEvent) {
+        if (!this.blockFileUpload) return
+        e.preventDefault()
+        e.stopPropagation()
 
-            e.target.parentElement.style.backgroundColor = 'transparent'
-        }
+        const parentElement = (e.target as HTMLElement | null)?.parentElement
+        if (parentElement) parentElement.style.backgroundColor = 'transparent'
     }
 
-    async dragDropFilelist(e: any, row: any) {
-        if (this.blockFileUpload) {
-            e.preventDefault()
-            e.target.parentElement.style.backgroundColor = 'transparent'
+    async dragDropFilelist(e: DragEvent, row: FileStateFile) {
+        if (!this.blockFileUpload) return
+        e.preventDefault()
+        const parentElement = (e.target as HTMLElement | null)?.parentElement
+        if (parentElement) parentElement.style.backgroundColor = 'transparent'
 
-            let dest: string
-            if (row.filename === '..') {
-                dest =
-                    this.absolutePath.slice(1, this.absolutePath.lastIndexOf('/') + 1) + this.draggingFile.item.filename
-            } else dest = this.absolutePath + '/' + row.filename + '/' + this.draggingFile.item.filename
-
-            this.$socket.emit(
-                'server.files.move',
-                {
-                    source: this.absolutePath.slice(1) + '/' + this.draggingFile.item.filename,
-                    dest: dest,
-                },
-                { action: 'files/getMove' }
-            )
+        let dest = this.absolutePath + '/' + row.filename + '/' + this.draggingFile.item.filename
+        if (row.filename === '..') {
+            dest = this.absolutePath.slice(1, this.absolutePath.lastIndexOf('/') + 1) + this.draggingFile.item.filename
         }
+
+        this.$socket.emit(
+            'server.files.move',
+            {
+                source: this.absolutePath.slice(1) + '/' + this.draggingFile.item.filename,
+                dest: dest,
+            },
+            { action: 'files/getMove' }
+        )
     }
 }
 </script>

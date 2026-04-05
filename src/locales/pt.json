@@ -65,7 +65,6 @@
             "UploadPrint": "Carregar e imprimir"
         },
         "TopCornerMenu": {
-            "Cancel": "Cancelar",
             "ConfirmationDialog": {
                 "Description": {
                     "HostReboot": "A reinicialização do host fará com que a impressão atual falhe!",
@@ -100,7 +99,6 @@
             "Stop": "Pare"
         },
         "UpdateDialog": {
-            "Close": "Fechar",
             "Empty": "Esvaziar",
             "Recovering": "Recuperando {software}...",
             "RecoveringDone": "Recuperando {software} feito!",
@@ -119,6 +117,14 @@
         "ScrewName": "Nome do parafuso",
         "ScrewOutput": " {current} de {max}"
     },
+    "Buttons": {
+        "Cancel": "Cancelar",
+        "Close": "Fechar",
+        "Delete": "Excluir",
+        "No": "Não",
+        "Save": "Salvar",
+        "Yes": "Sim"
+    },
     "ConnectionDialog": {
         "CannotConnectTo": "Não é possível conectar ao Moonraker ({host}).",
         "CheckMoonrakerLog": "Se esta mensagem aparecer repetidamente, dê uma olhada no arquivo de log localizado em:",
@@ -132,12 +138,10 @@
         "Empty": "Esvaziar",
         "HideTemperatures": "Ocultar temperaturas",
         "HideTimelapse": "Ocultar lapso de tempo",
-        "SendCode": "Enviar código...",
         "SetupConsole": "Console de configuração"
     },
     "Dialogs": {
         "StartPrint": {
-            "Cancel": "Cancelar",
             "DoYouWantToStartFilename": "Deseja iniciar {filename}?",
             "Headline": "Iniciar trabalho",
             "Print": "Impressão",
@@ -160,16 +164,13 @@
     },
     "EmergencyStopDialog": {
         "AreYouSure": "Você tem certeza?",
-        "EmergencyStop": "Parada de emergência",
-        "No": "Não",
-        "Yes": "Sim"
+        "EmergencyStop": "Parada de emergência"
     },
     "Files": {
         "AddBatchToQueue": "Adicionar lote à fila",
         "AddToQueue": "Adicionar à fila",
         "AllFiles": "Todos",
         "BedTemp": "Temp. mesa",
-        "Cancel": "Cancelar",
         "ChamberTemp": "Temp. Câmara",
         "Count": "Contagem",
         "Create": "Criar",
@@ -185,7 +186,6 @@
         "EditFile": "Editar arquivo",
         "Empty": "Esvaziar",
         "ExtruderTemp": "Temp. Extrusora",
-        "Filament": "Filamento",
         "FilamentName": "Nome do Filamento",
         "FilamentType": "Tipo de filamento",
         "FilamentUsage": "Uso de Filamento",
@@ -265,7 +265,6 @@
         "VoxelMode": "Modo Voxel (ASMBL)"
     },
     "Heightmap": {
-        "Abort": "abortar",
         "BedMeshCalibrate": "Calibrar malha da mesa",
         "BedMeshRemove": "Remoção da malha da mesa",
         "Calibrate": "Calibrar",
@@ -287,19 +286,14 @@
         "InvalidNameAscii": "O nome é inválido. Somente caracteres ASCII são permitidos.",
         "InvalidNameEmpty": "A entrada não deve estar vazia!",
         "InvalidNameReserved": "O perfil 'padrão' é reservado, escolha outro nome de perfil.",
-        "Later": "Depois",
         "Mesh": "Malha",
         "Name": "Nome",
         "NoBedMeshHasBeenLoadedYet": "Nenhuma malha da mesa foi carregada ainda.",
         "NoProfile": "Nenhum perfil disponível",
-        "Ok": "OK",
         "Probed": "Sondado",
         "Profiles": "Perfis",
-        "Remove": "Excluir",
-        "RemoveSaveDescription": "O perfil bed_mesh foi registrado como excluído. Clique em SAVE_CONFIG para removê-lo do arquivo printer.cfg e reinicie o Klipper.",
         "Rename": "renomear",
         "RenameBedMeshProfile": "Renomear Perfil de Malha da Mesa",
-        "SAVE_CONFIG": "SAVE_CONFIG",
         "ScaleGradient": "Escala gradiente",
         "ScaleZMax": "Escala z-max.",
         "TitleCalibrate": "Calibrar nova malha da mesa",
@@ -311,7 +305,6 @@
         "AddNote": "Adicionar nota",
         "AllJobs": "Todos",
         "AvgPrinttime": "Tempo de impressão - Ø",
-        "Cancel": "Cancelar",
         "Chart": "Gráfico",
         "CreateNote": "Criar nota",
         "Delete": "Excluir",
@@ -345,7 +338,6 @@
         "PrintTime": "Tempo de impressão",
         "PrinttimeAvg": "Tempo de impressão - Ø",
         "Reprint": "Reimprimir",
-        "Save": "Salvar",
         "Search": "Procurar",
         "SelectedFilamentUsed": "Filamento selecionado usado",
         "SelectedJobs": "Trabalhos selecionados",
@@ -367,8 +359,6 @@
         },
         "Table": "Table",
         "TitleExportHistory": "Export History",
-        "TitleRefreshHistory": "Refresh History",
-        "TitleSettings": "Settings",
         "TotalDuration": "Total Time",
         "TotalFilamentUsed": "Total Filament Used",
         "TotalJobs": "Total Jobs",
@@ -376,15 +366,12 @@
         "TotalTime": "Total Time"
     },
     "JobQueue": {
-        "AllJobs": "Todos os trabalhos",
-        "Cancel": "Cancelar",
         "ChangeCount": "Alterar contagem",
         "Count": "Contagem",
         "Empty": "Esvaziar",
         "InvalidCountEmpty": "A entrada não deve estar vazia!",
         "InvalidCountGreaterZero": "A entrada deve ser maior que 0!",
         "JobQueue": "Fila de trabalho",
-        "Jobs": "Trabalhos",
         "Pause": "Pausa",
         "RemoveFromQueue": "Remover da fila",
         "Start": "Começar"
@@ -392,14 +379,12 @@
     "Machine": {
         "ConfigFilesPanel": {
             "AllFiles": "Todos",
-            "Cancel": "Cancelar",
             "ConfigFiles": "Arquivos de configuração",
             "ConfigRootDirectoryDoesntExists": "Nenhum diretório de configuração encontrado. Verifique a opção \"config_path\" na seção [file_manager] da configuração do Moonraker.",
             "Create": "Criar",
             "CreateDirectory": "Criar diretório",
             "CreateFile": "Criar arquivo",
             "CurrentPath": "Caminho atual",
-            "Delete": "Excluir",
             "DeleteDirectory": "Excluir diretório",
             "DeleteDirectoryQuestion": "Excluir diretório \"{name}\" e todo o seu conteúdo?",
             "DeleteSelectedQuestion": "Excluir {count} elementos selecionados?",
@@ -437,7 +422,6 @@
         },
         "LogfilesPanel": {
             "Accept": "Aceitar",
-            "Cancel": "Cancelar",
             "Logfiles": "Arquivos de log",
             "Rollover": "Registros de substituição",
             "RolloverDescription": "Selecione quais logs devem ser redefinidos:",
@@ -480,10 +464,8 @@
             "CommittedYesterday": "committed ontem",
             "Detached": "independente",
             "Dirty": "lixo",
-            "ERROR": "Erro",
             "Invalid": "inválido",
             "OSPackages": "Pacotes do sistema operacional",
-            "PackagesCanBeUpgraded": "pacotes podem ser atualizados",
             "System": "Sistema",
             "Unknown": "Desconhecido",
             "Update": "Atualizar",
@@ -577,7 +559,6 @@
             },
             "RunoutSensor": {
                 "Detected": "detectado",
-                "Disabled": "desabilitado",
                 "Empty": "Vazio"
             }
         },
@@ -596,7 +577,6 @@
             "Estimate": "Estimado",
             "ETA": "ETA",
             "ExcludeObject": {
-                "Cancel": "cancelar",
                 "Excluded": "Excluído",
                 "ExcludeObject": "Excluir Objeto",
                 "ExcludeObjectHeadline": "Excluir Objeto",
@@ -604,10 +584,8 @@
             },
             "Filament": "Filamento",
             "File": "Arquivo",
-            "Files": "Arquivos",
             "Flow": "Fluxo",
             "Headline": "Status",
-            "Jobqueue": "Fila de trabalhos",
             "JobqueueMoreFiles": "nenhum trabalho | mais um trabalho | {count} mais trabalhos",
             "Layer": "Camada",
             "Max": "max",
@@ -632,7 +610,6 @@
             "ResumePrint": "Retomar impressão",
             "Slicer": "Fatiador",
             "Speed": "Velocidade",
-            "Status": "Status",
             "Total": "Total",
             "Unknown": "Desconhecido"
         },
@@ -686,21 +663,16 @@
             "Headline": "Z-Offset",
             "Later": "Depois",
             "Ok": "OK",
-            "Save": "Salvar",
             "SaveConfig": "SALVAR CONFIG",
             "SaveInfoDescription": "O novo Z-Offset foi calculado e registrado. Clique em \"SALVAR CONFIG\" para salvá-lo no arquivo printer.cfg e reiniciar o Klipper.",
             "SaveInfoDescriptionPrint": "O novo Z-Offset foi calculado e registrado. Após a impressão, clique em \"SALVAR CONFIG\" na barra superior para salvá-lo no arquivo printer.cfg e reiniciar o Klipper.",
-            "SaveInfoHeadline": "Informação",
-            "ToEndstop": "até o Endstop",
-            "ToProbe": "até Sonda"
+            "SaveInfoHeadline": "Informação"
         }
     },
     "PowerDeviceChangeDialog": {
         "AreYouSure": "Você tem certeza?",
-        "No": "Não",
         "TurnDeviceOff": "Desligar {device}",
-        "TurnDeviceOn": "Ligar {device}",
-        "Yes": "Sim"
+        "TurnDeviceOn": "Ligar {device}"
     },
     "Router": {
         "Console": "Console",
@@ -741,8 +713,6 @@
         "YouCanFindMore": "Você pode encontrar mais detalhes em"
     },
     "Settings": {
-        "Cancel": "Cancelar",
-        "Close": "Fechar",
         "ConsoleTab": {
             "AddFilter": "adicionar filtro",
             "Console": "Console",
@@ -847,7 +817,6 @@
             "DbHistoryTotals": "Histórico Totais",
             "DbTimelapseSettings": "Configs. Timelapse",
             "DbView": "Ver Configs.",
-            "DbWebcams": "Webcams",
             "EstimateValues": {
                 "Filament": "Filamento",
                 "File": "Arquivo",
@@ -857,7 +826,6 @@
             "FactoryReset": "Reset de Fábrica",
             "General": "Geral",
             "Language": "Idioma",
-            "MoonrakerDb": "Moonraker DB",
             "PrinterName": "Nome Impressora",
             "Reset": "reset",
             "Restore": "Restaura",
@@ -891,6 +859,7 @@
             "NOMacros": "Macros não encontradas...",
             "NoMacrosInGroup": "Sem macros neste grupo.",
             "Primary": "principal",
+            "Search": "Buscar",
             "Secondary": "secundário",
             "ShowInStatePaused": "Exibe/Oculta se impressora está pausada.",
             "ShowInStatePrinting": "Exibe/Oculta se impressora está imprimindo.",
@@ -920,9 +889,7 @@
             "NoPresetFound": "Pré-config. não encontrada",
             "Presets": "Pré-Configgs.",
             "Start": "Início",
-            "StartDescription": "Primeiro LED deste grupo.",
-            "UnableToLoadLight": "Não foi possível carregar luz",
-            "UnableToLoadPreset": "Não foi possível carregar pré-config."
+            "StartDescription": "Primeiro LED deste grupo."
         },
         "NavigationTab": {
             "Navigation": "Navegação"
@@ -959,7 +926,6 @@
             "Autorender": "Auto renderiza",
             "AutorenderDescription": "Se ativado, o vídeo em timelapse será renderizado automaticamente ao final da impressão.",
             "Camera": "Camera",
-            "CameraDescription": "Selecione qual câmera será usada",
             "ConstantRateFactor": "Fator de Taxa Constante",
             "ConstantRateFactorDescription": "Configura a qualidade versus o tamanho do arquivo do vídeo renderizado. A escala do Fator de Taxa Constante (CRF) varia de 0 a 51, onde 0 é sem perdas, 23 é o valor padrão e 51 é a pior qualidade possível. Um valor menor geralmente resulta em maior qualidade, e uma faixa subjetivamente razoável é de 17 a 28. Considere 17 ou 18 como visualmente sem perdas.",
             "duplicatelastframe": "Duplicar Último Quadro",
@@ -1018,9 +984,7 @@
             "VariableFps": "FPS Variável",
             "VariableFpsDescription": "Se ativado, a taxa de quadros do vídeo de saída será calculada com base no comprimento alvo.",
             "VariableFpsMax": "Max FPS Variável",
-            "VariableFpsMaxDescription": "",
-            "VariableFpsMin": "Min FPS Variável",
-            "VariableFpsMinDescription": ""
+            "VariableFpsMin": "Min FPS Variável"
         },
         "UiSettingsTab": {
             "BedScrewsDialog": "Configs. dos Fusos da Mesa",
@@ -1079,7 +1043,6 @@
             "IconMcu": "MCU",
             "IconNozzle": "Bico",
             "IconPrinter": "Impressora",
-            "Ipstream": "Câmera IP",
             "JMuxerStream": "Raw h264 stream (jmuxer)",
             "Mjpegstreamer": "MJPEG-Streamer",
             "MjpegstreamerAdaptive": "Adaptivo MJPEG-Streamer (experimental)",
@@ -1103,11 +1066,9 @@
     "Timelapse": {
         "AllFiles": "Todos",
         "Autorender": "Auto-render",
-        "Cancel": "Cancelar",
         "Create": "Criar",
         "CreateNewDirectory": "criar diretório",
         "CurrentPath": "Diretório Corrente",
-        "Delete": "Excluir",
         "DeleteDirectory": "Excluir diretório",
         "DeleteDirectoryQuestion": "Deseja realmente excluir o diretório \"{name}\" com todo o seu conteúdo?",
         "DeleteSelectedQuestion": "Você realmente deseja excluir {count} arquivos selecionados?",

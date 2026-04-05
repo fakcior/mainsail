@@ -31,7 +31,7 @@
                         <v-icon small class="mr-1">{{ mdiHelp }}</v-icon>
                         {{ $t('Editor.ConfigReference') }}
                     </v-btn>
-                    <v-btn v-if="configFileStructure" text tile class="d-none d-md-flex" @click="showFileStructure()">
+                    <v-btn v-if="existsFileStructure" text tile class="d-none d-md-flex" @click="toggleFileStructure">
                         <v-icon small class="mr-1">{{ mdiFormatListCheckbox }}</v-icon>
                         {{ $t('Editor.FileStructure') }}
                     </v-btn>
@@ -60,9 +60,9 @@
                         :name="filename"
                         :file-extension="fileExtension"
                         class="codemirror"
-                        :class="{ withSidebar: fileStructureSidebar }"
+                        :class="{ withSidebar: existsFileStructure && fileStructureSidebar }"
                         @lineChange="lineChanges" />
-                    <div v-if="fileStructureSidebar" class="d-none d-md-flex structure-sidebar">
+                    <div v-if="existsFileStructure && fileStructureSidebar" class="d-none d-md-flex structure-sidebar">
                         <v-treeview
                             activatable
                             dense
@@ -157,7 +157,7 @@
                 </v-card-actions>
             </panel>
         </v-dialog>
-        <devices-dialog :show-dialog="dialogDevices" @close="dialogDevices = false" />
+        <devices-dialog v-model="dialogDevices" />
     </div>
 </template>
 
@@ -168,6 +168,7 @@ import { capitalize, formatFilesize, windowBeforeUnloadFunction } from '@/plugin
 import Panel from '@/components/ui/Panel.vue'
 import { klipperRepos } from '@/store/variables'
 import CodemirrorAsync from '@/components/inputs/CodemirrorAsync'
+import type Codemirror from '@/components/inputs/Codemirror.vue'
 import {
     mdiClose,
     mdiCloseThick,
@@ -189,7 +190,6 @@ import { ConfigFileSection } from '@/store/files/types'
 export default class TheEditor extends Mixins(BaseMixin) {
     dialogConfirmChange = false
     dialogDevices = false
-    fileStructureSidebar = true
     treeviewItemKeyProp = 'line' as const
     structureActive: number[] = []
     structureOpen: number[] = []
@@ -211,8 +211,7 @@ export default class TheEditor extends Mixins(BaseMixin) {
     mdiUsb = mdiUsb
     mdiFormatListCheckbox = mdiFormatListCheckbox
 
-    //@ts-ignore
-    @Ref('editor') editor!: CodemirrorAsync
+    @Ref() readonly editor!: typeof Codemirror
 
     get changed() {
         return this.$store.state.editor.changed ?? false
@@ -358,11 +357,16 @@ export default class TheEditor extends Mixins(BaseMixin) {
         return url
     }
 
-    get configFileStructure() {
-        if (!['conf', 'cfg'].includes(this.fileExtension)) {
-            this.fileStructureSidebar = false
-            return null
-        }
+    get fileStructureSidebar() {
+        return this.$store.state.gui.editor.fileStructureSidebar
+    }
+
+    set fileStructureSidebar(newVal) {
+        this.$store.dispatch('gui/saveSetting', { name: 'editor.fileStructureSidebar', value: newVal })
+    }
+
+    get configFileStructure(): ConfigFileSection[] {
+        if (!['conf', 'cfg'].includes(this.fileExtension)) return []
 
         const lines = this.sourcecode.split(/\n/gi)
         const regex = /^[^#\S]*?(\[(?<section>.*?)]|(?<name>\w+)\s*?[:=])/gim
@@ -387,7 +391,7 @@ export default class TheEditor extends Mixins(BaseMixin) {
                 continue
             }
 
-            if (match['groups']['name']) {
+            if (structure.length && match['groups']['name']) {
                 structure[structure.length - 1]['children'].push({
                     name: match['groups']['name'],
                     type: 'item',
@@ -396,8 +400,15 @@ export default class TheEditor extends Mixins(BaseMixin) {
             }
         }
 
-        this.fileStructureSidebar = true
         return structure
+    }
+
+    get existsFileStructure() {
+        return this.configFileStructure.length > 0
+    }
+
+    toggleFileStructure() {
+        this.fileStructureSidebar = !this.fileStructureSidebar
     }
 
     cancelDownload() {
@@ -430,10 +441,6 @@ export default class TheEditor extends Mixins(BaseMixin) {
             content: this.sourcecode,
             restartServiceName: restartServiceName,
         })
-    }
-
-    showFileStructure() {
-        this.fileStructureSidebar = !this.fileStructureSidebar
     }
 
     // Relies on event bubbling to flip the flag before treeview active change is handled

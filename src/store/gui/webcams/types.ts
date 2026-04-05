@@ -6,8 +6,10 @@ export interface GuiWebcamStateWebcam {
     name: string
     location?: string
     service:
+        | 'grid'
         | 'hlsstream'
-        | 'ipstream'
+        | 'html-video'
+        | 'iframe'
         | 'jmuxer-stream'
         | 'mjpegstreamer'
         | 'mjpegstreamer-adaptive'

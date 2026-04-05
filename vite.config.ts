@@ -1,15 +1,16 @@
-import { createVuePlugin as vue } from 'vite-plugin-vue2'
-import loadVersion from 'vite-plugin-package-version'
+import vue from '@vitejs/plugin-vue2'
+import version from 'vite-plugin-package-version'
 import { defineConfig } from 'vite'
 
 import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
-import checker from 'vite-plugin-checker'
+import { checker } from 'vite-plugin-checker'
 
 import path from 'path'
 import buildVersion from './src/plugins/build-version'
 import buildReleaseInfo from './src/plugins/build-release_info'
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa'
+import postcssNesting from 'postcss-nesting'
 
 const PWAConfig: Partial<VitePWAOptions> = {
     registerType: 'autoUpdate',
@@ -17,16 +18,25 @@ const PWAConfig: Partial<VitePWAOptions> = {
     manifest: {
         name: 'Mainsail',
         short_name: 'Mainsail',
+        description: 'Web interface for Klipper 3D printer firmware',
         theme_color: '#D51F26',
+        display: 'standalone',
+        start_url: '/',
         background_color: '#121212',
         icons: [
             {
-                src: '/img/icons/icon-192-maskable.png',
+                src: '/img/icons/icon-192.png',
                 sizes: '192x192',
                 type: 'image/png',
             },
             {
-                src: '/img/icons/icon-512-maskable.png',
+                src: '/img/icons/icon-192-maskable.png',
+                sizes: '192x192',
+                type: 'image/png',
+                purpose: 'maskable',
+            },
+            {
+                src: '/img/icons/icon-512.png',
                 sizes: '512x512',
                 type: 'image/png',
             },
@@ -34,7 +44,7 @@ const PWAConfig: Partial<VitePWAOptions> = {
                 src: '/img/icons/icon-512-maskable.png',
                 sizes: '512x512',
                 type: 'image/png',
-                purpose: 'any maskable',
+                purpose: 'maskable',
             },
         ],
     },
@@ -43,10 +53,13 @@ const PWAConfig: Partial<VitePWAOptions> = {
         navigateFallbackDenylist: [/^\/(access|api|printer|server|websocket)/, /^\/webcam[2-4]?/],
         runtimeCaching: [
             {
-                urlPattern: (options) => options.url.pathname.startsWith('/config.json'),
+                urlPattern: /\/config\.json$/,
                 handler: 'StaleWhileRevalidate',
                 options: {
                     cacheName: 'config.json',
+                    cacheableResponse: {
+                        statuses: [0, 200],
+                    },
                 },
             },
         ],
@@ -67,8 +80,13 @@ export default defineConfig({
         buildVersion(),
         buildReleaseInfo(),
         vue(),
-        loadVersion(),
-        checker({ typescript: true }),
+        version(),
+        checker({
+            typescript: {
+                root: path.resolve(__dirname),
+                buildMode: false,
+            },
+        }),
         Components({
             dts: true, // enabled by default if `typescript` is installed
             resolvers: [VuetifyResolver()],
@@ -76,8 +94,18 @@ export default defineConfig({
     ],
 
     css: {
+        preprocessorOptions: {
+            sass: {
+                silenceDeprecations: ['import', 'global-builtin', 'slash-div', 'if-function'],
+                quietDeps: true,
+            },
+            scss: {
+                silenceDeprecations: ['import', 'global-builtin', 'slash-div', 'if-function'],
+                quietDeps: true,
+            },
+        },
         postcss: {
-            plugins: [require('postcss-nesting')()],
+            plugins: [postcssNesting()],
         },
     },
 
@@ -103,17 +131,36 @@ export default defineConfig({
                 },
             },
         },
+        commonjsOptions: {
+            transformMixedEsModules: true,
+        },
     },
 
     envPrefix: 'VUE_',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
+            stream: 'stream-browserify',
+            events: 'events',
+        },
+    },
+
+    optimizeDeps: {
+        include: ['events'],
+        esbuildOptions: {
+            define: {
+                global: 'globalThis',
+            },
         },
     },
 
     server: {
         host: '0.0.0.0',
         port: 8080,
+    },
+
+    test: {
+        environment: 'node',
+        include: ['tests/**/*.spec.ts'],
     },
 })

@@ -1,5 +1,5 @@
 <template>
-    <v-dialog :value="show" persistent :max-width="400" @keydown.esc="closeDialog">
+    <v-dialog v-model="showDialog" persistent :max-width="400" @keydown.esc="closeDialog">
         <panel
             :title="$t('Heightmap.BedMeshCalibrate')"
             :icon="mdiGrid"
@@ -26,7 +26,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="closeDialog">{{ $t('Heightmap.Abort') }}</v-btn>
+                <v-btn text @click="closeDialog">{{ $t('Buttons.Cancel') }}</v-btn>
                 <v-btn :disabled="isInvalidName" color="primary" text @click="calibrateMesh">
                     {{ $t('Heightmap.Calibrate') }}
                 </v-btn>
@@ -35,7 +35,8 @@
     </v-dialog>
 </template>
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Ref, VModel, Watch } from 'vue-property-decorator'
+import type { FocusableRef } from '@/types/vuetify'
 import BaseMixin from '@/components/mixins/base'
 import { mdiCloseThick, mdiGrid } from '@mdi/js'
 
@@ -44,17 +45,15 @@ export default class HeightmapRenameProfileDialog extends Mixins(BaseMixin) {
     mdiCloseThick = mdiCloseThick
     mdiGrid = mdiGrid
 
-    @Prop({ type: Boolean, required: true }) show!: boolean
-
-    $refs!: {
-        input: HTMLInputElement
-    }
+    @VModel({ type: Boolean }) showDialog!: boolean
+    @Ref() readonly input!: FocusableRef
 
     isInvalidName = false
     name = ''
 
     rules = [
         (value: string) => !!value || this.$t('Heightmap.InvalidNameEmpty'),
+
         // eslint-disable-next-line no-control-regex
         (value: string) => value === value.replace(/[^\x00-\x7F]/g, '') || this.$t('Heightmap.InvalidNameAscii'),
     ]
@@ -69,20 +68,17 @@ export default class HeightmapRenameProfileDialog extends Mixins(BaseMixin) {
     }
 
     closeDialog() {
-        this.$emit('close')
+        this.showDialog = false
     }
 
-    @Watch('show')
-    showChanged() {
-        if (this.show) {
-            this.name = 'default'
+    @Watch('showDialog')
+    onShowDialogChanged(newVal: boolean) {
+        if (!newVal) return
 
-            this.$nextTick(() => {
-                setTimeout(() => {
-                    this.$refs.input?.focus()
-                }, 100)
-            })
-        }
+        this.name = 'default'
+        setTimeout(() => {
+            this.input?.focus()
+        })
     }
 }
 </script>

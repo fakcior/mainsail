@@ -88,7 +88,6 @@
             "UploadPrint": "上傳並列印"
         },
         "TopCornerMenu": {
-            "Cancel": "取消",
             "ConfirmationDialog": {
                 "Description": {
                     "HostReboot": "重啟主機會導致目前列印失敗！",
@@ -123,7 +122,6 @@
             "Stop": "停止"
         },
         "UpdateDialog": {
-            "Close": "關閉",
             "Empty": "空的",
             "Recovering": "恢復 {software}...",
             "RecoveringDone": "恢復 {software} 完成!",
@@ -135,6 +133,14 @@
         "Abort": "中止",
         "Accept": "接受",
         "Adjusted": "調整後"
+    },
+    "Buttons": {
+        "Cancel": "取消",
+        "Close": "關閉",
+        "Delete": "刪除",
+        "No": "否",
+        "Save": "儲存",
+        "Yes": "是"
     },
     "ConnectionDialog": {
         "CannotConnectTo": "不能連接到 Moonraker ({host}).",
@@ -149,12 +155,10 @@
         "Empty": "空的",
         "HideTemperatures": "隱藏溫度",
         "HideTimelapse": "隱藏縮時攝影",
-        "SendCode": "傳送代碼...",
         "SetupConsole": "設定控制台"
     },
     "Dialogs": {
         "StartPrint": {
-            "Cancel": "取消",
             "DoYouWantToStartFilename": "您想要開始 {filename}嗎?",
             "Headline": "開始",
             "Print": "列印",
@@ -177,16 +181,13 @@
     },
     "EmergencyStopDialog": {
         "AreYouSure": "你確定嗎?",
-        "EmergencyStop": "緊急停止",
-        "No": "否",
-        "Yes": "是"
+        "EmergencyStop": "緊急停止"
     },
     "Files": {
         "AddBatchToQueue": "將批次添加到隊列",
         "AddToQueue": "新增到列隊",
         "AllFiles": "所有檔案",
         "BedTemp": "熱床溫度",
-        "Cancel": "取消",
         "ChamberTemp": "艙室溫度",
         "Create": "建立",
         "CreateNewDirectory": "建立新目錄",
@@ -199,7 +200,6 @@
         "EditFile": "編輯檔案",
         "Empty": "空的",
         "ExtruderTemp": "擠出機溫度",
-        "Filament": "耗材",
         "FilamentName": "耗材名稱",
         "FilamentType": "耗材類型",
         "FilamentUsage": "耗材用量",
@@ -277,7 +277,6 @@
         "VoxelMode": "Voxel Mode (ASMBL)"
     },
     "Heightmap": {
-        "Abort": "中止",
         "BedMeshCalibrate": "網床校正",
         "BedMeshRemove": "移除網床",
         "Calibrate": "校正",
@@ -298,19 +297,14 @@
         "InvalidNameAscii": "名稱無效。只允許使用 ascii 字符。",
         "InvalidNameEmpty": "輸入值不能為空！",
         "InvalidNameReserved": "預設 'default' 已保留，請選擇其他預設名稱。",
-        "Later": "Later",
         "Mesh": "網格",
         "Name": "名稱",
         "NoBedMeshHasBeenLoadedYet": "網床沒有載入.",
         "NoProfile": "沒有可用的設定檔",
-        "Ok": "好的",
         "Probed": "探測",
         "Profiles": "設定檔",
-        "Remove": "刪除",
-        "RemoveSaveDescription": "預設網床已標記需刪除。點擊\"儲存設定\"將會從printer.cfg中移除並重新啟動Klipper。",
         "Rename": "重新命名",
         "RenameBedMeshProfile": "重新命名網床設定檔",
-        "SAVE_CONFIG": "儲存設定",
         "ScaleGradient": "尺度梯度",
         "ScaleZMax": "Z最大標度",
         "TitleCalibrate": "校正新床網",
@@ -322,7 +316,6 @@
         "AddNote": "新增備註",
         "AllJobs": "全部",
         "AvgPrinttime": "平均列印時間",
-        "Cancel": "取消",
         "Chart": "圖表",
         "CreateNote": "新增備註",
         "Delete": "刪除",
@@ -356,7 +349,6 @@
         "PrintTime": "列印時間",
         "PrinttimeAvg": "平均列印時間",
         "Reprint": "重新列印",
-        "Save": "儲存",
         "Search": "搜尋",
         "SelectedFilamentUsed": "已選中的紀錄耗材使用量",
         "SelectedJobs": "已選中的紀錄",
@@ -378,8 +370,6 @@
         },
         "Table": "表",
         "TitleExportHistory": "導出歷史紀錄",
-        "TitleRefreshHistory": "刷新歷史紀錄",
-        "TitleSettings": "設定",
         "TotalDuration": "總計時間",
         "TotalFilamentUsed": "耗材使用總量",
         "TotalJobs": "使用次數",
@@ -387,15 +377,12 @@
         "TotalTime": "總計消耗時間"
     },
     "JobQueue": {
-        "AllJobs": "全部任務",
-        "Cancel": "取消",
         "ChangeCount": "更改統計",
         "Count": "統計",
         "Empty": "空",
         "InvalidCountEmpty": "輸入不能為空！",
         "InvalidCountGreaterZero": "輸入必須大於0！",
         "JobQueue": "任務隊列",
-        "Jobs": "每頁顯示任務數",
         "Pause": "暫停",
         "RemoveFromQueue": "從隊列中刪除",
         "Start": "開始"
@@ -403,14 +390,12 @@
     "Machine": {
         "ConfigFilesPanel": {
             "AllFiles": "所有",
-            "Cancel": "取消",
             "ConfigFiles": "設定檔",
             "ConfigRootDirectoryDoesntExists": "未找到設定目錄。請檢查Moonraker設定[file_manager]標籤中的\"config_path\"項是否正確填寫。",
             "Create": "建立",
             "CreateDirectory": "建立目錄",
             "CreateFile": "建立檔案",
             "CurrentPath": "目前路徑",
-            "Delete": "刪除",
             "DeleteDirectory": "刪除目錄",
             "DeleteDirectoryQuestion": "確認刪除 \"{name}\" 檔案夾和其中的所有內容?",
             "DeleteSelectedQuestion": "刪除已選中的{count}個檔案？",
@@ -448,7 +433,6 @@
         },
         "LogfilesPanel": {
             "Accept": "接受",
-            "Cancel": "取消",
             "Logfiles": "日誌檔案",
             "Rollover": "滾動日誌",
             "RolloverDescription": "請選擇應重置哪些日誌：",
@@ -490,10 +474,8 @@
             "CommittedYesterday": "昨天提交",
             "Detached": "獨立的",
             "Dirty": "出錯的",
-            "ERROR": "錯誤",
             "Invalid": "無效的",
             "OSPackages": "操作系統包",
-            "PackagesCanBeUpgraded": "程式包可以升級",
             "System": "系統",
             "Unknown": "未知的",
             "Update": "更新",
@@ -586,7 +568,6 @@
             },
             "RunoutSensor": {
                 "Detected": "監測",
-                "Disabled": "關閉",
                 "Empty": "空的"
             }
         },
@@ -605,7 +586,6 @@
             "Estimate": "估算時間",
             "ETA": "預計完成時間",
             "ExcludeObject": {
-                "Cancel": "取消",
                 "Excluded": "排除",
                 "ExcludeObject": "排除物件",
                 "ExcludeObjectHeadline": "排除物件",
@@ -613,10 +593,8 @@
             },
             "Filament": "耗材用量",
             "File": "檔案",
-            "Files": "檔案",
             "Flow": "流量",
             "Headline": "狀態",
-            "Jobqueue": "任務隊列",
             "JobqueueMoreFiles": "沒有任務 | 一個任務 | {count}個任務",
             "Layer": "層",
             "Max": "最高",
@@ -637,7 +615,6 @@
             "ResumePrint": "恢復列印",
             "Slicer": "切片時間",
             "Speed": "速度",
-            "Status": "狀態",
             "Total": "已經耗時",
             "Unknown": "未知"
         },
@@ -691,21 +668,16 @@
             "Headline": "Z軸偏移",
             "Later": "最後的",
             "Ok": "好",
-            "Save": "儲存",
             "SaveConfig": "儲存配置",
             "SaveInfoDescription": "已經計算生成新的Z偏移. 點擊 儲存配置 儲存到 printer.cfg 中並重啟 Klipper.",
             "SaveInfoDescriptionPrint": "已經計算生成新的Z偏移. 列印後點擊 儲存配置 儲存到 printer.cfg 中並重啟 Klipper.",
-            "SaveInfoHeadline": "資訊",
-            "ToEndstop": "到限位",
-            "ToProbe": "到探測器"
+            "SaveInfoHeadline": "資訊"
         }
     },
     "PowerDeviceChangeDialog": {
         "AreYouSure": "你確定嗎?",
-        "No": "否",
         "TurnDeviceOff": "關閉 {device}",
-        "TurnDeviceOn": "打開 {device}",
-        "Yes": "是"
+        "TurnDeviceOn": "打開 {device}"
     },
     "Router": {
         "Console": "控制台",
@@ -744,8 +716,6 @@
         "YouCanFindMore": "您可以在以下網址找到更多詳細訊息:"
     },
     "Settings": {
-        "Cancel": "取消",
-        "Close": "關閉",
         "ConsoleTab": {
             "AddFilter": "新增篩選器",
             "Console": "主控台",
@@ -849,7 +819,6 @@
             "DbHistoryTotals": "歷史總計",
             "DbTimelapseSettings": "時間格式設定",
             "DbView": "瀏覽設定",
-            "DbWebcams": "攝影機",
             "EstimateValues": {
                 "Filament": "耗材",
                 "File": "檔案",
@@ -859,7 +828,6 @@
             "FactoryReset": "恢復預設設定",
             "General": "通用",
             "Language": "語言",
-            "MoonrakerDb": "Moonraker 資料庫",
             "PrinterName": "列印機名稱",
             "Reset": "重置",
             "Restore": "復原",
@@ -893,6 +861,7 @@
             "NOMacros": "沒有找到巨集...",
             "NoMacrosInGroup": "該組沒有巨集",
             "Primary": "原始",
+            "Search": "搜尋",
             "Secondary": "次要",
             "ShowInStatePaused": "如果列印機暫停則顯示/隱藏分組。",
             "ShowInStatePrinting": "如果列印機正在列印顯示/隱藏分組。",
@@ -921,9 +890,7 @@
             "NoPresetFound": "未找到預設",
             "Presets": "預設",
             "Start": "開始",
-            "StartDescription": "該組的第一個 LED。",
-            "UnableToLoadLight": "無法載入燈",
-            "UnableToLoadPreset": "無法載入預設"
+            "StartDescription": "該組的第一個 LED。"
         },
         "PresetsTab": {
             "AddPreset": "新增預設",
@@ -956,7 +923,6 @@
             "Autorender": "自動渲染",
             "AutorenderDescription": "如果啟用，延時影片將在列印結束時自動渲染",
             "Camera": "攝影機",
-            "CameraDescription": "選擇應該使用哪個攝影機",
             "ConstantRateFactor": "固定偵率係數(CRF)",
             "ConstantRateFactorDescription": "這裡設定渲染影片的品質與檔案大小，CRF量表的參數範圍視 0–51，0為無損畫質、預設為23、51是最插畫值。數值越低畫質越好，建議合理數值為17-28。設定為17或18在視覺上和無損畫質差不多。",
             "duplicatelastframe": "重複影片結尾的最後一幀",
@@ -1074,7 +1040,6 @@
             "IconMcu": "主控制單元",
             "IconNozzle": "噴嘴",
             "IconPrinter": "列印機",
-            "Ipstream": "IP Camera",
             "Mjpegstreamer": "MJPEG-Streamer",
             "MjpegstreamerAdaptive": "適應 MJPEG-Streamer (實驗功能)",
             "Name": "名稱",
@@ -1095,11 +1060,9 @@
     "Timelapse": {
         "AllFiles": "所有",
         "Autorender": "自動渲染",
-        "Cancel": "取消",
         "Create": "建立",
         "CreateNewDirectory": "建立目錄",
         "CurrentPath": "目前路徑",
-        "Delete": "刪除",
         "DeleteDirectory": "刪除目錄",
         "DeleteDirectoryQuestion": "您真的要刪除 \"{name}\" 目錄及其所有內容嗎？",
         "DeleteSelectedQuestion": "您真的要刪除選中的{count}個檔案嗎？",

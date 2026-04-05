@@ -1,13 +1,14 @@
 <template>
-    <div class="position-relative d-flex">
+    <div class="webcamBackground" :style="wrapperStyle">
         <video
             v-show="status === 'connected'"
             ref="stream"
-            class="webcamStream"
+            class="webcamImage"
             :style="webcamStyle"
             autoplay
             muted
-            playsinline />
+            playsinline
+            @loadedmetadata="onLoadedMetadata" />
         <webcam-nozzle-crosshair v-if="nozzleCrosshair" :webcam="camSettings" />
         <v-row v-if="status !== 'connected'">
             <v-col class="_webcam_webrtc_output text-center d-flex flex-column justify-center align-center">
@@ -38,33 +39,33 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
     capitalize = capitalize
 
     pc: RTCPeerConnection | null = null
-    useStun = false
+    useStun = true
     aspectRatio: null | number = null
     status: string = 'connecting'
     restartTimer: number | null = null
 
     @Prop({ required: true }) readonly camSettings!: GuiWebcamStateWebcam
-    @Prop({ default: null }) declare readonly printerUrl: string | null
+    @Prop({ default: null }) readonly printerUrl!: string | null
     @Prop({ type: String, default: null }) readonly page!: string | null
-    @Ref() declare stream: HTMLVideoElement
+    @Ref() readonly stream!: HTMLVideoElement
 
     get url() {
         return this.convertUrl(this.camSettings?.stream_url, this.printerUrl)
     }
 
+    get wrapperStyle() {
+        return this.getWrapperStyle(this.aspectRatio, this.camSettings.rotation)
+    }
+
     get webcamStyle() {
-        const output = {
+        return {
             transform: this.generateTransform(
                 this.camSettings.flip_horizontal ?? false,
                 this.camSettings.flip_vertical ?? false,
-                this.camSettings.rotation ?? 0
+                this.camSettings.rotation ?? 0,
+                this.aspectRatio ?? 1
             ),
-            aspectRatio: 16 / 9,
         }
-
-        if (this.aspectRatio) output.aspectRatio = this.aspectRatio
-
-        return output
     }
 
     get nozzleCrosshair() {
@@ -105,9 +106,19 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
         try {
             const requestIceServers = this.useStun ? [{ urls: ['stun:stun.l.google.com:19302'] }] : null
             const response = await fetch(this.url, {
-                body: JSON.stringify({ type: 'request', iceServers: requestIceServers }),
+                body: JSON.stringify({ type: 'request', iceServers: requestIceServers, keepAlive: true }),
                 method: 'POST',
             })
+
+            if (this.useStun && response.status === 500) {
+                const errorMessage = await response.text()
+                this.log('Server returned 500 error, likely due to unsupported ICE server request.')
+                this.log(`Serer error message: ${errorMessage}`)
+                this.useStun = false
+                this.restartStream()
+                return
+            }
+
             if (response.status !== 200) {
                 this.log(`Failed to start stream: ${response.status}`)
                 this.restartStream()
@@ -126,10 +137,9 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
 
         // It's important to set any ICE servers returned, which could include servers we requested or servers
         // setup by the server. But note that older versions of camera-streamer won't return this property.
-        let peerConnectionConfig: RTCConfiguration = {
+        // https://webrtc.org/getting-started/unified-plan-transition-guide
+        const peerConnectionConfig: RTCConfiguration & { sdpSemantics?: string } = {
             iceServers: iceResponse.iceServers ?? [],
-            // https://webrtc.org/getting-started/unified-plan-transition-guide
-            // @ts-ignore
             sdpSemantics: 'unified-plan',
         }
         this.pc = new RTCPeerConnection(peerConnectionConfig)
@@ -144,6 +154,7 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
 
         this.pc.onconnectionstatechange = () => this.onConnectionStateChange()
         this.pc.ontrack = (e) => this.onTrack(e)
+        this.pc.ondatachannel = (e) => this.onDataChannel(e)
 
         await this.pc?.setRemoteDescription(iceResponse)
         const answer = await this.pc.createAnswer()
@@ -215,7 +226,24 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
         this.stream.srcObject = e.streams[0]
     }
 
-    log(msg: string, obj?: any) {
+    onDataChannel(event: RTCDataChannelEvent) {
+        const receiveChannel = event.channel
+
+        this.log(`Data channel opened: ${receiveChannel.label}`)
+
+        if (receiveChannel.label !== 'keepalive') {
+            this.log(`Unknown data channel label: ${receiveChannel.label}`)
+            return
+        }
+
+        receiveChannel.onmessage = (message) => {
+            if (message.data !== 'ping') return
+
+            receiveChannel.send('pong')
+        }
+    }
+
+    log(msg: string, obj?: unknown) {
         const message = `[WebRTC camera-streamer] ${msg}`
         if (obj) {
             window.console.log(message, obj)
@@ -246,6 +274,10 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
         }, delay)
     }
 
+    onLoadedMetadata() {
+        this.aspectRatio = this.updateAspectRatioFromVideo(this.stream)
+    }
+
     @Watch('url')
     changedUrl() {
         this.restartStream()
@@ -254,15 +286,7 @@ export default class WebrtcCameraStreamer extends Mixins(BaseMixin, WebcamMixin)
 </script>
 
 <style scoped>
-.webcamStream {
-    width: 100%;
-}
-
 ._webcam_webrtc_output {
     aspect-ratio: calc(3 / 2);
-}
-
-video {
-    width: 100%;
 }
 </style>

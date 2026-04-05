@@ -1,5 +1,6 @@
 import Dashboard from '../pages/Dashboard.vue'
 import Webcam from '../pages/Webcam.vue'
+import ToolCalibration from '../pages/ToolCalibration.vue'
 import Farm from '../pages/Farm.vue'
 import Console from '../pages/Console.vue'
 import Files from '../pages/Files.vue'
@@ -18,6 +19,7 @@ import {
     mdiHistory,
     mdiTimelapse,
     mdiWrench,
+    mdiAdjust
 } from '@mdi/js'
 
 const routes: AppRoute[] = [
@@ -48,6 +50,17 @@ const routes: AppRoute[] = [
         alwaysShow: true,
         showInNavi: true,
         position: 20,
+        fullscreen: true,
+    },
+    {
+        name: 'toolcalibration',
+        title: 'Tool calibration',
+        path: '/toolCalibration',
+        icon: mdiAdjust,
+        component: ToolCalibration,
+        alwaysShow: true,
+        showInNavi: true,
+        position: 35,
         fullscreen: true,
     },
     {

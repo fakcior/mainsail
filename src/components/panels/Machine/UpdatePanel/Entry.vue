@@ -114,17 +114,12 @@
                 </v-alert>
             </v-col>
         </v-row>
-        <git-commits-list
-            v-if="type === 'git_repo'"
-            :bool-show-dialog="boolShowCommitList"
-            :repo="repo"
-            @close-dialog="closeCommitList" />
+        <git-commits-list v-if="type === 'git_repo'" v-model="boolShowCommitList" :repo="repo" />
         <update-hint
-            :bool-show-dialog="boolShowUpdateHint"
+            v-model="boolShowUpdateHint"
             :repo="repo"
             @open-commit-history="boolShowCommitList = true"
-            @do-update="doUpdate"
-            @close-dialog="closeShowUpdateHint" />
+            @do-update="doUpdate" />
     </div>
 </template>
 
@@ -179,16 +174,14 @@ export default class UpdatePanelEntry extends Mixins(BaseMixin) {
 
     get localVersion() {
         const version = this.repo.version ?? '?'
-
-        if (!semver.valid(version)) return null
+        if (!semver.valid(version, { loose: true })) return null
 
         return version
     }
 
     get remoteVersion() {
         const version = this.repo.remote_version ?? '?'
-
-        if (!semver.valid(version)) return null
+        if (!semver.valid(version, { loose: true })) return null
 
         return version
     }
@@ -217,9 +210,9 @@ export default class UpdatePanelEntry extends Mixins(BaseMixin) {
     }
 
     get versionOutput() {
-        let output = this.branchOutput ? `${this.branchOutput}: ` : ''
+        const output = this.branchOutput ? `${this.branchOutput}: ` : ''
 
-        if (this.localVersion && this.remoteVersion && semver.gt(this.remoteVersion, this.localVersion)) {
+        if (this.semverUpdatable) {
             return `${output}${this.localVersion} > ${this.remoteVersion}`
         }
 
@@ -252,6 +245,9 @@ export default class UpdatePanelEntry extends Mixins(BaseMixin) {
     }
 
     get isCorrupt() {
+        // Only git repos can be corrupt
+        if (this.configuredType !== 'git_repo') return false
+
         return this.repo.corrupt ?? false
     }
 
@@ -331,7 +327,7 @@ export default class UpdatePanelEntry extends Mixins(BaseMixin) {
         if (!this.localVersion) return false
         if (!this.remoteVersion) return false
 
-        return semver.gt(this.remoteVersion, this.localVersion)
+        return semver.gt(this.remoteVersion, this.localVersion, { loose: true })
     }
 
     get repo_name() {

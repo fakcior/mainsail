@@ -9,20 +9,21 @@
 
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import BaseMixin from '../mixins/base'
+import ThemeMixin from '../mixins/theme'
 import { basicSetup } from 'codemirror'
 import { EditorView, keymap } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
-import { vscodeDark } from '@uiw/codemirror-theme-vscode'
+import { vscodeDark, vscodeLight } from '@uiw/codemirror-theme-vscode'
 import { StreamLanguage } from '@codemirror/language'
 import { klipper_config } from '@/plugins/StreamParserKlipperConfig'
 import { gcode } from '@/plugins/StreamParserGcode'
-import { indentWithTab } from '@codemirror/commands'
+import { insertTab, indentLess } from '@codemirror/commands'
 import { json } from '@codemirror/lang-json'
 import { css } from '@codemirror/lang-css'
 import { indentUnit } from '@codemirror/language'
 
 @Component
-export default class Codemirror extends Mixins(BaseMixin) {
+export default class Codemirror extends Mixins(BaseMixin, ThemeMixin) {
     private content = ''
     private codemirror: null | EditorView = null
     private cminstance: null | EditorView = null
@@ -80,11 +81,14 @@ export default class Codemirror extends Mixins(BaseMixin) {
 
     get cmExtensions() {
         const extensions = [
-            EditorView.theme({}, { dark: true }),
+            EditorView.theme({}, { dark: this.themeMode === 'dark' }),
             basicSetup,
-            vscodeDark,
+            this.vscodeTheme,
             indentUnit.of(' '.repeat(this.tabSize)),
-            keymap.of([indentWithTab]),
+            keymap.of([
+                { key: 'Tab', run: insertTab },
+                { key: 'Shift-Tab', run: indentLess },
+            ]),
             EditorView.updateListener.of((update) => {
                 if (update.selectionSet) {
                     const line = this.cminstance?.state?.doc.lineAt(this.cminstance?.state?.selection.main.head).number
@@ -111,6 +115,10 @@ export default class Codemirror extends Mixins(BaseMixin) {
 
     get tabSize() {
         return this.$store.state.gui.editor.tabSize || 2
+    }
+
+    get vscodeTheme() {
+        return this.themeMode === 'dark' ? vscodeDark : vscodeLight
     }
 
     gotoLine(line: number) {

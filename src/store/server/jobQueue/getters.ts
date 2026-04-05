@@ -1,11 +1,9 @@
 import { GetterTree } from 'vuex'
 import { ServerJobQueueState, ServerJobQueueStateJob } from '@/store/server/jobQueue/types'
 import Vue from 'vue'
-import { thumbnailBigMin, thumbnailSmallMax, thumbnailSmallMin } from '@/store/variables'
-import { escapePath } from '@/plugins/helpers'
+import { RootState } from '@/store/types'
 
-// eslint-disable-next-line
-export const getters: GetterTree<ServerJobQueueState, any> = {
+export const getters: GetterTree<ServerJobQueueState, RootState> = {
     getJobs: (state, getters, rootState, rootGetters) => {
         const jobs: ServerJobQueueStateJob[] = []
 
@@ -31,57 +29,5 @@ export const getters: GetterTree<ServerJobQueueState, any> = {
 
     getJobsCount: (state) => {
         return state.queued_jobs.length
-    },
-
-    getSmallThumbnail: (state, getters, rootState, rootGetters) => (item: ServerJobQueueStateJob) => {
-        if (item?.metadata?.thumbnails?.length) {
-            const thumbnail = item?.metadata?.thumbnails.find(
-                (thumb: any) =>
-                    thumb.width >= thumbnailSmallMin &&
-                    thumb.width <= thumbnailSmallMax &&
-                    thumb.height >= thumbnailSmallMin &&
-                    thumb.height <= thumbnailSmallMax
-            )
-            const path =
-                item.filename.lastIndexOf('/') !== -1
-                    ? 'gcodes/' + item.filename.slice(0, item.filename.lastIndexOf('/'))
-                    : 'gcodes'
-
-            if (thumbnail && 'relative_path' in thumbnail)
-                return (
-                    rootGetters['socket/getUrl'] +
-                    '/server/files/' +
-                    escapePath(path) +
-                    '/' +
-                    escapePath(thumbnail.relative_path) +
-                    '?timestamp=' +
-                    item.metadata?.modified.getTime()
-                )
-        }
-
-        return ''
-    },
-
-    getBigThumbnail: (state, getters, rootState, rootGetters) => (item: ServerJobQueueStateJob) => {
-        if (item?.metadata?.thumbnails?.length) {
-            const thumbnail = item?.metadata?.thumbnails.find((thumb: any) => thumb.width >= thumbnailBigMin)
-            const path =
-                item.filename.lastIndexOf('/') !== -1
-                    ? 'gcodes/' + item.filename.slice(0, item.filename.lastIndexOf('/'))
-                    : 'gcodes'
-
-            if (thumbnail && 'relative_path' in thumbnail)
-                return (
-                    rootGetters['socket/getUrl'] +
-                    '/server/files/' +
-                    escapePath(path) +
-                    '/' +
-                    escapePath(thumbnail.relative_path) +
-                    '?timestamp=' +
-                    item.metadata?.modified.getTime()
-                )
-        }
-
-        return ''
     },
 }

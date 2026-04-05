@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="webcamBackground" :style="wrapperStyle">
         <video
             v-show="status === 'connected'"
             ref="video"
@@ -7,7 +7,8 @@
             class="webcamImage"
             autoplay
             playsinline
-            muted />
+            muted
+            @loadedmetadata="onLoadedMetadata" />
         <v-row v-if="status !== 'connected'">
             <v-col class="_webcam_webrtc_output text-center d-flex flex-column justify-center align-center">
                 <v-progress-circular v-if="status === 'connecting'" indeterminate color="primary" class="mb-3" />
@@ -30,6 +31,10 @@ interface OfferData {
     medias: string[]
 }
 
+interface RTCIceServerWithCredentialType extends RTCIceServer {
+    credentialType?: string
+}
+
 @Component
 export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
     capitalize = capitalize
@@ -37,10 +42,10 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
     @Prop({ required: true }) readonly camSettings!: GuiWebcamStateWebcam
     @Prop({ default: null }) readonly printerUrl!: string | null
     @Prop({ type: String, default: null }) readonly page!: string | null
-    @Ref() declare video: HTMLVideoElement
+    @Ref() readonly video!: HTMLVideoElement
 
     pc: RTCPeerConnection | null = null
-    restartTimeout: any = null
+    restartTimeout: ReturnType<typeof setTimeout> | null = null
     status: string = 'connecting'
     eTag: string | null = null
     sessionUuid: string | null = null
@@ -51,6 +56,7 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
         medias: [],
     }
     RESTART_PAUSE = 2000
+    aspectRatio: number | null = null
 
     // stop the video and close the streams if the component is going to be destroyed so we don't leave hanging streams
     beforeDestroy() {
@@ -60,12 +66,17 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
         if (this.restartTimeout) clearTimeout(this.restartTimeout)
     }
 
+    get wrapperStyle() {
+        return this.getWrapperStyle(this.aspectRatio, this.camSettings.rotation)
+    }
+
     get webcamStyle() {
         return {
             transform: this.generateTransform(
                 this.camSettings.flip_horizontal ?? false,
                 this.camSettings.flip_vertical ?? false,
-                this.camSettings.rotation ?? 0
+                this.camSettings.rotation ?? 0,
+                this.aspectRatio ?? 1
             ),
         }
     }
@@ -102,7 +113,7 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
         this.start()
     }
 
-    log(msg: string, obj?: any) {
+    log(msg: string, obj?: unknown) {
         if (obj) {
             window.console.log(`[WebRTC mediamtx] ${msg}`, obj)
             return
@@ -114,9 +125,8 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
     // webrtc player methods
     // adapted from https://github.com/bluenviron/mediamtx/blob/main/internal/core/webrtc_read_index.html
 
-    unquoteCredential = (v: any) => JSON.parse(`"${v}"`)
+    unquoteCredential = (v: string) => JSON.parse(`"${v}"`)
 
-    // eslint-disable-next-line no-undef
     linkToIceServers(links: string | null): RTCIceServer[] {
         if (links === null) return []
 
@@ -128,8 +138,7 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
             // break if match is null
             if (m === null) return { urls: '' }
 
-            // eslint-disable-next-line no-undef
-            const ret: RTCIceServer = {
+            const ret: RTCIceServerWithCredentialType = {
                 urls: [m[1]],
             }
 
@@ -165,7 +174,7 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
 
     generateSdpFragment(offerData: OfferData, candidates: RTCIceCandidate[]) {
         // I don't found a specification for this, but it seems to be the only way to make it work
-        const candidatesByMedia: any = {}
+        const candidatesByMedia: Record<number, RTCIceCandidate[]> = {}
         for (const candidate of candidates) {
             const mid = candidate.sdpMLineIndex
             if (mid === null) continue
@@ -219,7 +228,7 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
             }
 
             await this.onIceServers(res)
-        } catch (err) {
+        } catch {
             this.log('error: Cannot connect to backend')
             this.scheduleRestart()
         }
@@ -229,12 +238,11 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
         const iceServers = this.linkToIceServers(res.headers.get('Link'))
         this.log('ice servers:', iceServers)
 
+        // https://webrtc.org/getting-started/unified-plan-transition-guide
         this.pc = new RTCPeerConnection({
             iceServers,
-            // https://webrtc.org/getting-started/unified-plan-transition-guide
-            // @ts-ignore
             sdpSemantics: 'unified-plan',
-        })
+        } as RTCConfiguration & { sdpSemantics?: string })
 
         const direction = 'sendrecv'
         this.pc.addTransceiver('video', { direction })
@@ -252,7 +260,6 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
         await this.onLocalOffer(offer)
     }
 
-    // eslint-disable-next-line no-undef
     async onLocalOffer(offer: RTCSessionDescriptionInit) {
         try {
             const res = await fetch(this.url ?? '', {
@@ -284,8 +291,9 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
                     sdp,
                 })
             )
-        } catch (err: any) {
-            this.log(err?.message ?? err ?? 'unknown error')
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err ?? 'unknown error')
+            this.log(message)
             this.scheduleRestart()
         }
     }
@@ -295,8 +303,9 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
 
         try {
             this.pc?.setRemoteDescription(answer)
-        } catch (err: any) {
-            this.log(err)
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err)
+            this.log(message)
             this.scheduleRestart()
         }
 
@@ -346,7 +355,6 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
                 headers: {
                     'Content-Type': 'application/trickle-ice-sdpfrag',
                     'If-Match': this.eTag,
-                    // eslint-disable-next-line no-undef
                 } as HeadersInit,
                 body: this.generateSdpFragment(this.offerData, candidates),
             })
@@ -361,8 +369,9 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
 
             this.log(`bad status code ${res.status}`)
             this.scheduleRestart()
-        } catch (err: any) {
-            this.log(err)
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err)
+            this.log(message)
             this.scheduleRestart()
         }
     }
@@ -381,7 +390,7 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
 
         this.terminate()
 
-        this.restartTimeout = window.setTimeout(() => {
+        this.restartTimeout = setTimeout(() => {
             this.log('scheduling restart')
             this.restartTimeout = null
             this.start()
@@ -390,19 +399,15 @@ export default class WebrtcMediaMTX extends Mixins(BaseMixin, WebcamMixin) {
         this.eTag = ''
         this.queuedCandidates = []
     }
+
+    onLoadedMetadata() {
+        this.aspectRatio = this.updateAspectRatioFromVideo(this.video)
+    }
 }
 </script>
 
 <style scoped>
-.webcamImage {
-    width: 100%;
-}
-
 ._webcam_webrtc_output {
     aspect-ratio: calc(3 / 2);
-}
-
-video {
-    width: 100%;
 }
 </style>

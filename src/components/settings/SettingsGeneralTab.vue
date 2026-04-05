@@ -56,8 +56,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component'
-import { Mixins } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import SettingsRow from '@/components/settings/SettingsRow.vue'
 import Panel from '@/components/ui/Panel.vue'
@@ -81,20 +80,20 @@ export default class SettingsGeneralTab extends Mixins(BaseMixin, SettingsGenera
     availableLanguages: { text: string; value: string }[] = []
 
     async created() {
-        const locales = import.meta.glob<string>('../../locales/*.json', { import: 'title' })
+        const locales = import.meta.glob('../../locales/*.json', { import: 'default' })
         const languages: { text: string; value: string }[] = []
 
         for (const file in locales) {
             const langKey = file.slice(file.lastIndexOf('/') + 1, file.lastIndexOf('.'))
-            const title = await locales[file]()
+            const locale = (await locales[file]()) as { title: string }
 
             languages.push({
-                text: title,
+                text: locale.title,
                 value: langKey,
             })
         }
 
-        this.availableLanguages = languages
+        this.availableLanguages = languages.sort((a, b) => a.text.localeCompare(b.text))
     }
 
     get printerName() {
@@ -123,20 +122,37 @@ export default class SettingsGeneralTab extends Mixins(BaseMixin, SettingsGenera
 
     get dateFormatItems() {
         const date = new Date()
-        const userLocale =
-            navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language
-
-        return [
-            { value: null, text: `Browser (${date.toLocaleDateString(userLocale, { dateStyle: 'medium' })})` },
-            {
-                value: '2-digits',
-                text: date.toLocaleDateString(userLocale, { day: '2-digit', month: '2-digit', year: 'numeric' }),
-            },
-            {
-                value: 'short',
-                text: date.toLocaleDateString(userLocale, { day: '2-digit', month: 'short', year: 'numeric' }),
-            },
+        const availableFormats = [
+            null,
+            'short',
+            'iso',
+            'mm-dd-yyyy',
+            'mm-dd-yy',
+            'm-d-yyyy',
+            'm-d-yy',
+            'dd-mm-yyyy',
+            'dd-mm-yy',
+            'dd.mm.yyyy',
+            'dd.mm.yy',
+            'd.m.yyyy',
+            'd.m.yy',
+            'yyyy. mm. dd.',
+            'yy. mm. dd.',
         ]
+
+        return availableFormats.map((format) => {
+            let name = format
+            if (name === null) name = 'Browser'
+            else if (['short', 'iso'].includes(name)) name = name.toUpperCase()
+
+            let example = this.formatDate(date, format)
+            if (format === null) example = date.toLocaleDateString(this.browserLocale, { dateStyle: 'medium' })
+
+            return {
+                value: format,
+                text: `${name} (${example})`,
+            }
+        })
     }
 
     get timeFormat() {

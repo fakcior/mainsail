@@ -18,15 +18,15 @@
         </div>
         
         <div class="tool-buttons">
-            <v-btn small @click="doSend(`LOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
+            <v-btn small :disabled="printerIsPrintingOnly" @click="doSend(`LOAD_ONE_FILAMENT TOOL=${toolNumber} MATERIAL=${selectedType}`)">
                 <v-icon left small>{{mdiRedoVariant}}</v-icon>
                 {{ $t('LOAD', { isDefault: '' }) }}
             </v-btn>
-            <v-btn small @click="doSend(`UNLOAD_ONE_FILAMENT TOOL=${toolNumber}`)">
+            <v-btn small :disabled="printerIsPrintingOnly" @click="doSend(`UNLOAD_ONE_FILAMENT TOOL=${toolNumber} MATERIAL=${selectedType}`)">
                 <v-icon left small>{{mdiUndoVariant}}</v-icon>
                 {{ $t('UNLOAD', { isDefault: '' }) }}
             </v-btn>
-            <v-btn small @click="doSend(`T${toolNumber}`)">
+            <v-btn small :disabled="printerIsPrintingOnly" @click="doSend(`T${toolNumber}`)">
                 <v-icon left small>{{mdiTargetVariant}}</v-icon>
                 {{ $t('ACTIVATE', { isDefault: '' }) }}
             </v-btn>

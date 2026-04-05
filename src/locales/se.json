@@ -76,7 +76,6 @@
             "UploadPrint": "Ladda upp och skriv ut"
         },
         "TopCornerMenu": {
-            "Cancel": "Avbryt",
             "ConfirmationDialog": {
                 "Description": {
                     "HostReboot": "Om du startar om värddatorn kommer den aktuella utskriften att misslyckas!",
@@ -111,7 +110,6 @@
             "Stop": "Stoppa"
         },
         "UpdateDialog": {
-            "Close": "Stäng",
             "Empty": "Tom",
             "Recovering": "Återställer {software}...",
             "RecoveringDone": "Återställning av {software} klar!",
@@ -130,6 +128,14 @@
         "ScrewName": "Skruvnamn",
         "ScrewOutput": "{current} av {max}"
     },
+    "Buttons": {
+        "Cancel": "Avbryt",
+        "Close": "Stäng",
+        "Delete": "Radera",
+        "No": "Nej",
+        "Save": "Spara",
+        "Yes": "Ja"
+    },
     "ConnectionDialog": {
         "CannotConnectTo": "Kan inte ansluta till Moonraker ({host}).",
         "CheckMoonrakerLog": "Om det här meddelandet visas upprepade gånger, vänligen ta en titt i loggfilen som finns på:",
@@ -143,12 +149,10 @@
         "Empty": "Tom",
         "HideTemperatures": "Dölj temperaturer",
         "HideTimelapse": "Dölj Timelapse",
-        "SendCode": "Skicka kod...",
         "SetupConsole": "Installationskonsol"
     },
     "Dialogs": {
         "StartPrint": {
-            "Cancel": "Avbryt",
             "DoYouWantToStartFilename": "Vill du starta {filename}?",
             "DoYouWantToStartFilenameFilament": "Vill du starta {filename} med följande filament?",
             "Headline": "Starta jobb",
@@ -172,16 +176,13 @@
     },
     "EmergencyStopDialog": {
         "AreYouSure": "Är du säker?",
-        "EmergencyStop": "Nödstopp",
-        "No": "Nej",
-        "Yes": "Ja"
+        "EmergencyStop": "Nödstopp"
     },
     "Files": {
         "AddBatchToQueue": "Lägg till omgång till kö",
         "AddToQueue": "Lägg till i kö",
         "AllFiles": "Alla",
         "BedTemp": "Bäddtemp.",
-        "Cancel": "Avbryt",
         "ChamberTemp": "Kammartemp.",
         "Count": "Räkna",
         "Create": "Skapa",
@@ -198,7 +199,6 @@
         "EditFile": "Redigera fil",
         "Empty": "Tom",
         "ExtruderTemp": "Extruder Temp.",
-        "Filament": "Filament",
         "FilamentName": "Filament Namn",
         "FilamentType": "Filament Typ",
         "FilamentUsage": "Filament Användning",
@@ -278,7 +278,6 @@
         "VoxelMode": "Voxelläge (ASMBL)"
     },
     "Heightmap": {
-        "Abort": "avbryt",
         "BedMeshCalibrate": "Kalibrera sängnät (Bed Mesh)",
         "BedMeshRemove": "Ta bort sängnät (Bed Mesh)",
         "Calibrate": "kalibrera",
@@ -300,19 +299,14 @@
         "InvalidNameAscii": "Namnet är ogiltigt. Endast ascii-tecken är tillåtna.",
         "InvalidNameEmpty": "Inmatning får inte vara tom!",
         "InvalidNameReserved": "Profilen \"default\" är reserverad, välj ett annat profilnamn.",
-        "Later": "Senare",
         "Mesh": "Nät (Mesh)",
         "Name": "Namn",
         "NoBedMeshHasBeenLoadedYet": "Inget sängnät (bed mesh) har laddats ännu.",
         "NoProfile": "Ingen profil tillgänglig",
-        "Ok": "OK",
         "Probed": "Sonderat",
         "Profiles": "Profiler",
-        "Remove": "radera",
-        "RemoveSaveDescription": "bed_mesh profile har registrerats som raderad. Klicka på SAVE_CONFIG för att ta bort den från printer.cfg och starta om Klipper.",
         "Rename": "döp om",
         "RenameBedMeshProfile": "Döp om sängnätsprofil (Bed Mesh Profile)",
-        "SAVE_CONFIG": "SAVE_CONFIG",
         "ScaleGradient": "Skala övertoning",
         "ScaleZMax": "Skala z-max.",
         "TitleCalibrate": "Kalibrera nytt sängnät (bed mesh)",
@@ -324,7 +318,6 @@
         "AddNote": "Lägg till anteckning",
         "AllJobs": "Alla",
         "AvgPrinttime": "Utskriftstid - Ø",
-        "Cancel": "Avbryt",
         "Chart": "Diagram",
         "CreateNote": "Skapa anteckning",
         "Delete": "Radera",
@@ -359,7 +352,6 @@
         "PrintTime": "Utskriftstid",
         "PrinttimeAvg": "Utskriftstid - Ø",
         "Reprint": "Skriv ut på nytt",
-        "Save": "spara",
         "Search": "sök",
         "SelectedFilamentUsed": "Valt filament som används",
         "SelectedJobs": "Valda jobb",
@@ -381,8 +373,6 @@
         },
         "Table": "Tabell",
         "TitleExportHistory": "Exportera historik",
-        "TitleRefreshHistory": "Uppdatera historik",
-        "TitleSettings": "Inställningar",
         "TotalDuration": "Total tid",
         "TotalFilamentUsed": "Totalt använt filament",
         "TotalJobs": "Totalt antal jobb",
@@ -390,15 +380,12 @@
         "TotalTime": "Total tid"
     },
     "JobQueue": {
-        "AllJobs": "Alla jobb",
-        "Cancel": "Avbryt",
         "ChangeCount": "Ändra räkning",
         "Count": "Räkna",
         "Empty": "Tom",
         "InvalidCountEmpty": "Inmatning får inte vara tom!",
         "InvalidCountGreaterZero": "Inmatningen måste vara större än 0!",
         "JobQueue": "Jobbkö",
-        "Jobs": "Jobb",
         "Pause": "Pausa",
         "RemoveFromQueue": "Ta bort från kö",
         "Start": "Starta"
@@ -406,14 +393,12 @@
     "Machine": {
         "ConfigFilesPanel": {
             "AllFiles": "Alla",
-            "Cancel": "Avbryt",
             "ConfigFiles": "Konfigurationsfiler",
             "ConfigRootDirectoryDoesntExists": "Ingen konfigurationskatalog hittades. Kontrollera alternativet \"config_path\" i avsnittet [file_hanterare] i Moonraker-konfigurationen.",
             "Create": "Skapa",
             "CreateDirectory": "Skapa katalog",
             "CreateFile": "Skapa fil",
             "CurrentPath": "Nuvarande sökväg",
-            "Delete": "Radera",
             "DeleteDirectory": "Radera historik",
             "DeleteDirectoryQuestion": "Vill du verkligen radera katalogen \"{name}\" med allt dess innehåll?",
             "DeleteSelectedQuestion": "Vill du ta bort {count} markerade element?",
@@ -452,7 +437,6 @@
         },
         "LogfilesPanel": {
             "Accept": "godkänn",
-            "Cancel": "avbryt",
             "Logfiles": "Loggfiler",
             "Rollover": "Överrullningsloggar",
             "RolloverDescription": "Välj vilka loggar som ska återställas:",
@@ -488,7 +472,6 @@
             "Abort": "Avbryt",
             "AreYouSure": "Är du säker?",
             "CheckForUpdates": "Sök efter uppdateringar",
-            "Close": "Stäng",
             "CommitHistory": "Commit Historik",
             "Commits": "Commits",
             "CommitsAvailable": "inga commits tillgängliga | {count} commit tillgänglig | {count} commits tillgängliga",
@@ -631,7 +614,6 @@
             "PowerControl": "Strömstyrning"
         },
         "SpoolmanPanel": {
-            "Cancel": "Avbryt",
             "ChangeSpool": "Byt spole",
             "DaysAgo": "för {days} dagar sedan",
             "EjectSpool": "Mata ut spolen",
@@ -665,7 +647,6 @@
             "Estimate": "Uppskattning",
             "ETA": "Beräknad tid",
             "ExcludeObject": {
-                "Cancel": "avbryt",
                 "Excluded": "Exluderad",
                 "ExcludeObject": "Exkludera objekt",
                 "ExcludeObjectHeadline": "Exkludera objekt",
@@ -673,10 +654,8 @@
             },
             "Filament": "Filament",
             "File": "Fil",
-            "Files": "Filer",
             "Flow": "Flöde (Flow)",
             "Headline": "Status",
-            "Jobqueue": "Jobbkö",
             "JobqueueMoreFiles": "inga fler jobb | ett jobb till | {count} jobb till",
             "Layer": "Lager",
             "Max": "max",
@@ -701,7 +680,6 @@
             "ResumePrint": "Fortsätt utskrift",
             "Slicer": "Slicer",
             "Speed": "Hastighet",
-            "Status": "Status",
             "Total": "Totalt",
             "Unknown": "Okänd"
         },
@@ -761,7 +739,6 @@
             "Headline": "Z-Offset",
             "Later": "Senare",
             "Ok": "OK",
-            "Save": "Spara",
             "SaveConfig": "SPARA KONFIG",
             "SaveInfoDescription": "Den nya z-offset har beräknats och registrerats. Klicka på SAVE_CONFIG för att lagra den nya z-offset i din printer.cfg och starta om Klipper.",
             "SaveInfoDescriptionPrint": "Den nya Z-offseten har beräknats och registrerats. Efter utskrift, klicka på SAVE_CONFIG i den övre raden för att lagra den i printer.cfg och starta om Klipper.",
@@ -770,10 +747,8 @@
     },
     "PowerDeviceChangeDialog": {
         "AreYouSure": "Är du säker?",
-        "No": "Nej",
         "TurnDeviceOff": "Stäng av {device}",
-        "TurnDeviceOn": "Slå på {device}",
-        "Yes": "Ja"
+        "TurnDeviceOn": "Slå på {device}"
     },
     "Router": {
         "Console": "konsol",
@@ -815,8 +790,6 @@
         "YouCanFindMore": "Du kan hitta mer information på"
     },
     "Settings": {
-        "Cancel": "Avbryt",
-        "Close": "Stäng",
         "ConsoleTab": {
             "AddFilter": "lägg till filter",
             "Console": "Konsol",
@@ -981,6 +954,7 @@
             "NOMacros": "Inga makron hittades...",
             "NoMacrosInGroup": "Inga makron i den här gruppen.",
             "Primary": "primär",
+            "Search": "Sök",
             "Secondary": "sekundär",
             "ShowInStatePaused": "Visa/dölj om skrivaren är pausad.",
             "ShowInStatePrinting": "Visa/dölj om skrivaren skriver ut.",
@@ -1010,9 +984,7 @@
             "NoPresetFound": "Ingen förinställning hittades",
             "Presets": "Förinställningar",
             "Start": "Start",
-            "StartDescription": "Första lysdioden i denna grupp.",
-            "UnableToLoadLight": "Det går inte att ladda ljus",
-            "UnableToLoadPreset": "Det gick inte att ladda förinställningen"
+            "StartDescription": "Första lysdioden i denna grupp."
         },
         "NavigationTab": {
             "Navigation": "Navigering"
@@ -1049,7 +1021,6 @@
             "Autorender": "Automatisk rendering",
             "AutorenderDescription": "Om det är aktiverat renderas timelapse-videon automatiskt i slutet av utskriften",
             "Camera": "Kamera",
-            "CameraDescription": "Välj vilken kamera som ska användas",
             "ConstantRateFactor": "Konstant Rate Factor",
             "ConstantRateFactorDescription": "Detta konfigurerar kvalitet kontra filstorlek på den renderade videon. CRF-skalans intervall är 0–51, där 0 är förlustfri, 23 är standard och 51 är sämsta möjliga kvalitet. Ett lägre värde leder generellt till högre kvalitet och ett subjektivt förnuftigt intervall är 17–28. Betrakta 17 eller 18 som visuellt förlustfria.",
             "duplicatelastframe": "duplicatelastframe",
@@ -1183,7 +1154,6 @@
             "IconMcu": "MCU",
             "IconNozzle": "Munstycke (Nozzle)",
             "IconPrinter": "Skrivare",
-            "Ipstream": "IP-kamera",
             "JMuxerStream": "Raw h264-ström (jmuxer)",
             "Mjpegstreamer": "MJPEG-Streamer",
             "MjpegstreamerAdaptive": "Adaptiv MJPEG-Streamer (experimentell)",
@@ -1209,11 +1179,9 @@
     "Timelapse": {
         "AllFiles": "Alla",
         "Autorender": "Automatisk rendering",
-        "Cancel": "Avbryt",
         "Create": "Skapa",
         "CreateNewDirectory": "skapa katalog",
         "CurrentPath": "Nuvarande sökväg",
-        "Delete": "Radera",
         "DeleteDirectory": "Radera katalog",
         "DeleteDirectoryQuestion": "Vill du verkligen ta bort katalogen \"{name}\" med allt dess innehåll?",
         "DeleteSelectedQuestion": "Vill du verkligen ta bort {count} valda filer?",

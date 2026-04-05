@@ -83,8 +83,17 @@
                                 :label="$t('Settings.WebcamsTab.Service')" />
                         </v-col>
                     </v-row>
-                    <v-row v-if="['mjpegstreamer-adaptive', 'jmuxer-stream'].includes(webcam.service)">
-                        <v-col class="py-2 col-6">
+                    <v-row v-if="hasTargetFps || hasRotate">
+                        <v-col v-if="hasAspectRatio" class="py-2">
+                            <v-text-field
+                                v-model="webcam.aspect_ratio"
+                                :label="$t('Settings.WebcamsTab.AspectRatio')"
+                                hide-details="auto"
+                                outlined
+                                dense
+                                :rules="[rules.required, rules.aspect]" />
+                        </v-col>
+                        <v-col v-if="hasTargetFps" class="py-2 col-6">
                             <v-text-field
                                 v-model="webcam.target_fps"
                                 outlined
@@ -92,7 +101,7 @@
                                 hide-details
                                 :label="$t('Settings.WebcamsTab.TargetFPS')" />
                         </v-col>
-                        <v-col class="py-2 col-6">
+                        <v-col v-if="hasRotate" class="py-2 col-6">
                             <v-select
                                 v-model="webcam.rotation"
                                 :items="rotationItems"
@@ -122,7 +131,7 @@
                     </v-row>
                     <v-row>
                         <v-col class="pt-1 pb-3">
-                            <div class="v-label v-label--active theme--dark text-subtitle-1">
+                            <div class="v-label v-label--active text-subtitle-1">
                                 {{ $t('Settings.WebcamsTab.FlipWebcam') }}
                             </div>
                         </v-col>
@@ -146,7 +155,7 @@
                     <template v-if="nozzleCrosshairAvialable">
                         <v-row>
                             <v-col class="pt-3 pb-3">
-                                <div class="v-label v-label--active theme--dark text-subtitle-1">
+                                <div class="v-label v-label--active text-subtitle-1">
                                     {{ $t('Settings.WebcamsTab.NozzleCrosshair') }}:
                                 </div>
                             </v-col>
@@ -175,8 +184,7 @@
                                         mode="rgba"
                                         @update:color="updateLogoColor" />
                                 </v-menu>
-                                <div
-                                    class="v-label v-label--active theme--dark text-subtitle-1 d-inline-block ml-2 mt-2">
+                                <div class="v-label v-label--active text-subtitle-1 d-inline-block ml-2 mt-2">
                                     {{ $t('Settings.WebcamsTab.Color') }}
                                 </div>
                             </v-col>
@@ -202,7 +210,7 @@
             </v-row>
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
-            <v-btn text @click="closeForm">{{ $t('Settings.Cancel') }}</v-btn>
+            <v-btn text @click="closeForm">{{ $t('Buttons.Cancel') }}</v-btn>
             <v-btn color="primary" text type="submit" :disabled="!valid">{{ actionButtonText }}</v-btn>
         </v-card-actions>
     </v-form>
@@ -229,13 +237,24 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
     @Prop({ type: Object, required: true }) private webcam!: GuiWebcamStateWebcam
     @Prop({ type: String, default: 'create' }) readonly type!: 'create' | 'edit'
 
-    private selectIcon = false
-    private valid = false
-    private oldWebcamName = ''
+    selectIcon = false
+    valid = false
+    oldWebcamName = ''
 
-    private rules = {
+    rules = {
         required: (value: string) => value !== '' || this.$t('Settings.WebcamsTab.Required'),
         unique: (value: string) => !this.existsWebcamName(value) || this.$t('Settings.WebcamsTab.NameAlreadyExists'),
+        aspect: (value: string) => {
+            const match = value.toString().match(/^(\d+)\s*[:/]\s*(\d+)$/)
+            if (!match) return this.$t('Settings.WebcamsTab.InvalidAspectRatio')
+
+            const width = parseInt(match[1])
+            const height = parseInt(match[2])
+
+            if (width < 1 || height < 1) return this.$t('Settings.WebcamsTab.InvalidAspectRatio')
+
+            return true
+        },
     }
 
     get webcams() {
@@ -266,7 +285,7 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
     }
 
     get rulesStreamUrl() {
-        let rules = []
+        const rules = []
 
         if (this.webcam.service !== 'mjpegstreamer-adaptive') {
             rules.push(this.rules.required)
@@ -276,7 +295,7 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
     }
 
     get rulesSnapshotUrl() {
-        let rules = []
+        const rules = []
 
         if (this.webcam.service === 'mjpegstreamer-adaptive') {
             rules.push(this.rules.required)
@@ -290,7 +309,8 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
             { value: 'mjpegstreamer', text: this.$t('Settings.WebcamsTab.Mjpegstreamer') },
             { value: 'mjpegstreamer-adaptive', text: this.$t('Settings.WebcamsTab.MjpegstreamerAdaptive') },
             { value: 'uv4l-mjpeg', text: this.$t('Settings.WebcamsTab.Uv4lMjpeg') },
-            { value: 'ipstream', text: this.$t('Settings.WebcamsTab.Ipstream') },
+            { value: 'html-video', text: this.$t('Settings.WebcamsTab.HtmlVideo') },
+            { value: 'iframe', text: this.$t('Settings.WebcamsTab.HtmlIframe') },
             { value: 'webrtc-camerastreamer', text: this.$t('Settings.WebcamsTab.WebrtcCameraStreamer') },
             { value: 'webrtc-go2rtc', text: this.$t('Settings.WebcamsTab.WebrtcGo2rtc') },
             { value: 'webrtc-mediamtx', text: this.$t('Settings.WebcamsTab.WebrtcMediaMTX') },
@@ -314,15 +334,39 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
     }
 
     get classIconButtonArrow() {
-        let classes = ['_transition']
+        const classes = ['_transition']
 
         if (this.selectIcon) classes.push('_rotate-180')
 
         return classes
     }
 
+    get hasTargetFps() {
+        return ['mjpegstreamer-adaptive', 'jmuxer-stream'].includes(this.webcam.service)
+    }
+
+    get hasRotate() {
+        return [
+            'hlsstream',
+            'html-video',
+            'iframe',
+            'jmuxer-stream',
+            'mjpegstreamer',
+            'mjpegstreamer-adaptive',
+            'uv4l-mjpeg',
+            'webrtc-camerastreamer',
+            'webrtc-go2rtc',
+            'webrtc-janus',
+            'webrtc-mediamtx',
+        ].includes(this.webcam.service)
+    }
+
     get hasFpsCounter() {
         return ['mjpegstreamer', 'mjpegstreamer-adaptive'].includes(this.webcam.service)
+    }
+
+    get hasAspectRatio() {
+        return ['iframe'].includes(this.webcam.service)
     }
 
     get hasAudioOption() {
@@ -342,8 +386,7 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
             return
         }
 
-        // @ts-ignore
-        this.webcam.extra_data.hideFps = newVal
+        this.webcam.extra_data!.hideFps = newVal
     }
 
     get enableAudio() {
@@ -359,8 +402,7 @@ export default class WebcamForm extends Mixins(BaseMixin, WebcamMixin) {
             return
         }
 
-        // @ts-ignore
-        this.webcam.extra_data.enableAudio = newVal
+        this.webcam.extra_data!.enableAudio = newVal
     }
 
     get nozzleCrosshairAvialable() {

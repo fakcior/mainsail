@@ -1,5 +1,5 @@
 <template>
-    <div style="position: relative" class="d-flex justify-center">
+    <div class="webcamBackground" :style="wrapperStyle">
         <img
             v-show="status === 'connected'"
             ref="image"
@@ -47,15 +47,14 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
     aspectRatio: null | number = null
     timerFPS: number | null = null
     timerRestart: number | null = null
+    reader: ReadableStreamDefaultReader<Uint8Array> | null
 
     @Prop({ required: true }) readonly camSettings!: GuiWebcamStateWebcam
     @Prop({ default: null }) readonly printerUrl!: string | null
-    @Prop({ default: true }) declare showFps: boolean
+    @Prop({ default: true }) readonly showFps!: boolean
     @Prop({ type: String, default: null }) readonly page!: string | null
+    @Ref() readonly image!: HTMLImageElement
 
-    @Ref('image') readonly image!: HTMLImageElement
-
-    private reader: ReadableStreamDefaultReader<Uint8Array> | null
     constructor() {
         super()
         this.reader = null
@@ -65,24 +64,19 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
         return this.convertUrl(this.camSettings?.stream_url, this.printerUrl)
     }
 
+    get wrapperStyle() {
+        return this.getWrapperStyle(this.aspectRatio, this.camSettings.rotation)
+    }
+
     get webcamStyle() {
-        const output = {
+        return {
             transform: this.generateTransform(
                 this.camSettings.flip_horizontal ?? false,
                 this.camSettings.flip_vertical ?? false,
-                this.camSettings.rotation ?? 0
+                this.camSettings.rotation ?? 0,
+                this.aspectRatio ?? 1
             ),
-            aspectRatio: 16 / 9,
-            maxHeight: window.innerHeight - 155 + 'px',
-            maxWidth: 'auto',
         }
-
-        if (this.aspectRatio) {
-            output.aspectRatio = this.aspectRatio
-            output.maxWidth = (window.innerHeight - 155) * this.aspectRatio + 'px'
-        }
-
-        return output
     }
 
     get fpsOutput() {
@@ -118,7 +112,7 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
         this.startStream()
     }
 
-    log(msg: string, obj?: any) {
+    log(msg: string, obj?: unknown) {
         if (obj) {
             window.console.log(`[MJPEG streamer] ${msg}`, obj)
             return
@@ -127,13 +121,13 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
         window.console.log(`[MJPEG streamer] ${msg}`)
     }
 
-    getLength(headers: any) {
+    getLength(headers: string) {
         let contentLength = -1
-        headers.split('\n').forEach((header: any) => {
+        headers.split('\n').forEach((header: string) => {
             const pair = header.split(':')
             if (pair[0].toLowerCase() === CONTENT_LENGTH) {
                 // Fix for issue https://github.com/aruntj/mjpeg-readable-stream/issues/3 suggested by martapanc
-                contentLength = pair[1]
+                contentLength = Number(pair[1])
             }
         })
         return contentLength
@@ -189,8 +183,9 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
             // cleanup
             this.reader = null
             response = null
-        } catch (error: any) {
-            this.log(error.message)
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error)
+            this.log(message)
             this.status = 'error'
             this.statusMessage = this.$t('Panels.WebcamPanel.ErrorWhileConnecting', { url: this.url }).toString()
 
@@ -262,8 +257,9 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
                     headers = ''
                 }
             } while (!done)
-        } catch (error: any) {
-            this.log(`readStream error: ${error.message ?? ''}`, error)
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error)
+            this.log(`readStream error: ${message}`, error)
         } finally {
             this.reader?.releaseLock()
         }
@@ -337,19 +333,14 @@ export default class Mjpegstreamer extends Mixins(BaseMixin, WebcamMixin) {
     }
 
     onload() {
-        if (this.aspectRatio !== null || !this.image) return
+        if (this.aspectRatio !== null) return
 
-        this.aspectRatio = this.image.naturalWidth / this.image.naturalHeight
+        this.aspectRatio = this.updateAspectRatioFromImage(this.image)
     }
 }
 </script>
 
 <style scoped>
-.webcamImage {
-    width: 100%;
-    background: lightgray;
-}
-
 .webcamFpsOutput {
     display: inline-block;
     position: absolute;

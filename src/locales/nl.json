@@ -90,7 +90,6 @@
             "UploadPrint": "Upload & Print"
         },
         "TopCornerMenu": {
-            "Cancel": "Annuleer",
             "ConfirmationDialog": {
                 "Description": {
                     "HostReboot": "Wanneer je nu de host reboot, zal de huidige print mislukken!",
@@ -125,7 +124,6 @@
             "Stop": "Stop"
         },
         "UpdateDialog": {
-            "Close": "Sluiten",
             "Empty": "Leeg",
             "Recovering": "Herstellen van {software}...",
             "RecoveringDone": "Herstellen van {software} voltooid!",
@@ -144,11 +142,17 @@
         "ScrewName": "Schroef Naam",
         "ScrewOutput": "{current} van {max}"
     },
+    "Buttons": {
+        "Cancel": "Annuleer",
+        "Close": "Sluiten",
+        "Delete": "Verwijder",
+        "No": "Nee",
+        "Save": "Opslaan",
+        "Yes": "Ja"
+    },
     "CancelJobDialog": {
         "AreYouSure": "Weet je het zeker?",
-        "CancelJob": "Annuleer Job",
-        "No": "Nee",
-        "Yes": "Ja"
+        "CancelJob": "Annuleer Job"
     },
     "ConnectionDialog": {
         "CannotConnectTo": "Kan niet verbinden met Moonraker ({host}).",
@@ -164,14 +168,11 @@
         "Empty": "Leeg",
         "HideTemperatures": "Verberg temperaturen",
         "HideTimelapse": "Verberg Timelapse",
-        "SendCode": "Verzend code...",
         "SetupConsole": "Instellingen"
     },
     "CoolDownDialog": {
         "AreYouSure": "Weet je het zeker?",
-        "CoolDown": "Koel af",
-        "No": "Nee",
-        "Yes": "Ja"
+        "CoolDown": "Koel af"
     },
     "DevicesDialog": {
         "Formats": "Formaten",
@@ -181,7 +182,6 @@
     },
     "Dialogs": {
         "StartPrint": {
-            "Cancel": "Annuleer",
             "DoYouWantToStartFilename": "Wil je {filename} starten?",
             "Headline": "Start print",
             "Print": "print",
@@ -205,16 +205,13 @@
     },
     "EmergencyStopDialog": {
         "AreYouSure": "Weet je het zeker?",
-        "EmergencyStop": "Noodstop",
-        "No": "Nee",
-        "Yes": "Ja"
+        "EmergencyStop": "Noodstop"
     },
     "Files": {
         "AddBatchToQueue": "Voeg batch toe aan wachtrij",
         "AddToQueue": "Voeg aan wachtrij toe",
         "AllFiles": "Alle",
         "BedTemp": "Bed Temp.",
-        "Cancel": "Annuleer",
         "ChamberTemp": "Kamer Temp.",
         "Count": "Aantal",
         "Create": "Creëer",
@@ -229,7 +226,6 @@
         "EditFile": "Bewerk bestand",
         "Empty": "Leeg",
         "ExtruderTemp": "Extruder Temp.",
-        "Filament": "Filament",
         "FilamentName": "Filamentnaam",
         "FilamentType": "Filament Type",
         "FilamentUsage": "Filamentgebruik",
@@ -307,7 +303,6 @@
         "VoxelMode": "Voxel Modus (ASMBL)"
     },
     "Heightmap": {
-        "Abort": "annuleer",
         "BedMeshCalibrate": "Bed Mesh Kalibreren",
         "BedMeshRemove": "Bed Mesh verwijderen",
         "Calibrate": "kalibreren",
@@ -328,19 +323,14 @@
         "InvalidNameAlreadyExists": "Profielnaam bestaat al, kies een andere profielnaam.",
         "InvalidNameEmpty": "Veld mag niet leeg zijn!",
         "InvalidNameReserved": "Profiel 'default' is gereserveerd, kies een andere profielnaam.",
-        "Later": "Later",
         "Mesh": "Mesh",
         "Name": "Naam",
         "NoBedMeshHasBeenLoadedYet": "Er is nog geen bed_mesh ingeladen.",
         "NoProfile": "Geen profiel beschikbaar",
-        "Ok": "Ok",
         "Probed": "Geprobed",
         "Profiles": "Profielen",
-        "Remove": "verwijderen",
-        "RemoveSaveDescription": "Het bed_mesh profiel is als verwijderd gemarkeerd. Klik op SAVE_CONFIG om het van de printer.cfg te verwijderen en Klipper te herstarten.",
         "Rename": "hernoemen",
         "RenameBedMeshProfile": "Hernoem Bed Mesh Profiel",
-        "SAVE_CONFIG": "SAVE_CONFIG",
         "ScaleGradient": "Kleurverloop schalen",
         "ScaleZMax": "Schaal z-max.",
         "TitleCalibrate": "Kalibreer nieuwe bed mesh",
@@ -352,7 +342,6 @@
         "AddNote": "Voeg notitie toe",
         "AllJobs": "Alle",
         "AvgPrinttime": "Gemiddelde printtijd",
-        "Cancel": "Annuleer",
         "Chart": "Grafiek",
         "CreateNote": "Creëer notitie",
         "DateBasedReminder": "Datum",
@@ -398,7 +387,6 @@
         "Reminder": "Herinnering",
         "Repeat": "Herhaal",
         "Reprint": "Opnieuw printen",
-        "Save": "Opslaan",
         "Search": "zoek",
         "SelectedFilamentUsed": "Geselecteerd Filament verbruikt",
         "SelectedJobs": "Geselecteerde jobs",
@@ -420,8 +408,6 @@
         },
         "Table": "Tabel",
         "TitleExportHistory": "Export geschiedenis",
-        "TitleRefreshHistory": "Ververs geschiedenis",
-        "TitleSettings": "Instellingen",
         "TotalDuration": "Totale Tijd",
         "TotalFilamentUsed": "Totaal Filament Verbruikt",
         "TotalJobs": "Totaal Jobs",
@@ -429,15 +415,12 @@
         "TotalTime": "Totale Tijd"
     },
     "JobQueue": {
-        "AllJobs": "Alle jobs",
-        "Cancel": "Annuleer",
         "ChangeCount": "Verander aantal",
         "Count": "Aantal",
         "Empty": "Leeg",
         "InvalidCountEmpty": "Invoer mag niet leeg zijn!",
         "InvalidCountGreaterZero": "Invoer moet groter dan 0 zijn!",
         "JobQueue": "Job wachtrij",
-        "Jobs": "Jobs",
         "Pause": "Pauze",
         "RemoveFromQueue": "Verwijder uit wachtrij",
         "Start": "Start"
@@ -445,14 +428,12 @@
     "Machine": {
         "ConfigFilesPanel": {
             "AllFiles": "Alle",
-            "Cancel": "Annuleer",
             "ConfigFiles": "Config bestanden",
             "ConfigRootDirectoryDoesntExists": "Geen configuratie directory gevonden. Controleer de optie \"config_path\" in de [file_manager] sectie van de Moonraker configuratie.",
             "Create": "Maak",
             "CreateDirectory": "Maak map",
             "CreateFile": "Maak bestand",
             "CurrentPath": "Huidig pad",
-            "Delete": "Verwijder",
             "DeleteDirectory": "Verwijder map",
             "DeleteDirectoryQuestion": "Weet je zeker dat je de \"{name}\" map wil verwijderen met alle inhoud?",
             "DeleteSelectedQuestion": "Verwijder {count} geselecteerde elementen?",
@@ -488,7 +469,6 @@
         },
         "LogfilesPanel": {
             "Accept": "accepteer",
-            "Cancel": "annuleer",
             "Logfiles": "Logbestanden",
             "Rollover": "Roteer logs",
             "RolloverDescription": "Selecteer welke logs moeten roteren:",
@@ -531,10 +511,8 @@
             "CommittedYesterday": "gisteren gecommit",
             "Detached": "detached",
             "Dirty": "vies",
-            "ERROR": "FOUT",
             "Invalid": "ongeldig",
             "OSPackages": "OS-Packages",
-            "PackagesCanBeUpgraded": "pakketten kunnen worden geüpgraded",
             "System": "Systeem",
             "Unknown": "onbekend",
             "Update": "update",
@@ -628,7 +606,6 @@
             },
             "RunoutSensor": {
                 "Detected": "gedetecteerd",
-                "Disabled": "uitgeschakeld",
                 "Empty": "Leeg"
             }
         },
@@ -647,7 +624,6 @@
             "Estimate": "Schatting",
             "ETA": "ETA",
             "ExcludeObject": {
-                "Cancel": "annuleer",
                 "Excluded": "Uitgesloten",
                 "ExcludeObject": "Object uitsluiten",
                 "ExcludeObjectHeadline": "Object uitsluiten",
@@ -655,10 +631,8 @@
             },
             "Filament": "Filament",
             "File": "Bestand",
-            "Files": "Bestanden",
             "Flow": "Flow",
             "Headline": "Status",
-            "Jobqueue": "Wachtrij",
             "JobqueueMoreFiles": "geen jobs meer | nog een job | {count} jobs",
             "Layer": "Laag",
             "Max": "max",
@@ -683,7 +657,6 @@
             "ResumePrint": "Hervat print",
             "Slicer": "Slicer",
             "Speed": "Snelheid",
-            "Status": "Status",
             "Total": "Totaal",
             "Unknown": "Onbekend"
         },
@@ -737,21 +710,16 @@
             "Headline": "Z offset",
             "Later": "Later",
             "Ok": "Ok",
-            "Save": "Opslaan",
             "SaveConfig": "SAVE CONFIG",
             "SaveInfoDescription": "De nieuwe z-offset is berekend en geregistreerd. Klik op \"SAVE CONFIG\" om de nieuwe z-offset op te slaan in je printer.cf en Klipper te herstarten.",
             "SaveInfoDescriptionPrint": "De nieuwe z-offset is berekend en geregistreerd. Klik na het printen op \"SAVE CONFIG\" om de nieuwe z-offset op te slaan in je printer.cf en Klipper te herstarten.",
-            "SaveInfoHeadline": "Informatie",
-            "ToEndstop": "naar Endstop",
-            "ToProbe": "naar Probe"
+            "SaveInfoHeadline": "Informatie"
         }
     },
     "PowerDeviceChangeDialog": {
         "AreYouSure": "Weet je het zeker?",
-        "No": "Nee",
         "TurnDeviceOff": "Zet {device} uit",
-        "TurnDeviceOn": "Zet {device} aan",
-        "Yes": "Ja"
+        "TurnDeviceOn": "Zet {device} aan"
     },
     "Router": {
         "Console": "Console",
@@ -792,8 +760,6 @@
         "YouCanFindMore": "Je kunt meer details vinden op"
     },
     "Settings": {
-        "Cancel": "Annuleer",
-        "Close": "Sluit",
         "ConsoleTab": {
             "AddFilter": "voeg filter toe",
             "Console": "Console",
@@ -895,7 +861,6 @@
             "DbHistoryTotals": "Geschiedenis Totalen",
             "DbTimelapseSettings": "Timelapse Instellingen",
             "DbView": "Weergaveinstellingen",
-            "DbWebcams": "Webcams",
             "EstimateValues": {
                 "Filament": "Filament",
                 "File": "Bestand",
@@ -905,7 +870,6 @@
             "FactoryReset": "Herstel naar fabrieksinstellingen",
             "General": "Algemeen",
             "Language": "Taal",
-            "MoonrakerDb": "Moonraker DB",
             "PrinterName": "Printer naam",
             "Reset": "reset",
             "Restore": "Herstellen",
@@ -951,6 +915,7 @@
             "NOMacros": "geen macros gevonden...",
             "NoMacrosInGroup": "Geen macros in deze groep.",
             "Primary": "primair",
+            "Search": "zoek",
             "Secondary": "secundair",
             "ShowInStatePaused": "Toon/verberg wanneer de printer gepauzeerd is.",
             "ShowInStatePrinting": "Toon/verberg wanneer de printer aan het printen is.",
@@ -980,9 +945,7 @@
             "NoPresetFound": "Geen presets gevonden",
             "Presets": "Presets",
             "Start": "Start",
-            "StartDescription": "Eerste LED van deze groep.",
-            "UnableToLoadLight": "Niet gelukt het licht te laden",
-            "UnableToLoadPreset": "Niet gelukt de preset te laden"
+            "StartDescription": "Eerste LED van deze groep."
         },
         "PresetsTab": {
             "AddPreset": "voeg preset toe",
@@ -1016,7 +979,6 @@
             "Autorender": "Autorender",
             "AutorenderDescription": "Wanneer ingeschakeld, zal de timelapse video automatisch renderen aan het eind van de print",
             "Camera": "Camera",
-            "CameraDescription": "Selecteer welke camera gebruikt wordt",
             "ConstantRateFactor": "Constant Rate Factor",
             "ConstantRateFactorDescription": "Dit bepaalt de kwaliteit vs bestandsgrootte van de gerenderde video. De CRF schaal is van 0-51 waar 0 zonder verlies is, 23 de standaard en 51 de slechts mogelijke kwaliteit. Een lagere waarde geeft over het algemeen betere kwaliteit en een gangbare waarde is 17-28. Zie 17 of 18 als praktisch zonder kwaliteitsverlies.",
             "duplicatelastframe": "duplicatelastframe",
@@ -1107,7 +1069,6 @@
             "PowerDeviceName": "Printer power apparaat",
             "PowerDeviceNameDescription": "Selecteer welk Moonraker power apparaat gebruikt moet worden om de printer te schakelen.",
             "Primary": "Primair",
-            "ShowWebcamInNavigation": "Toon Webcam in de navigatie",
             "UiSettings": "UI Instellingen"
         },
         "Update": "updaten",
@@ -1127,7 +1088,6 @@
             "IconMcu": "MCU",
             "IconNozzle": "Nozzle",
             "IconPrinter": "Printer",
-            "Ipstream": "IP Camera",
             "Mjpegstreamer": "MJPEG-Streamer",
             "MjpegstreamerAdaptive": "Adaptieve MJPEG-Streamer (experimenteel)",
             "Name": "Naam",
@@ -1148,11 +1108,9 @@
     "Timelapse": {
         "AllFiles": "Alle",
         "Autorender": "Autorender",
-        "Cancel": "Annuleer",
         "Create": "Creëer",
         "CreateNewDirectory": "Creëer nieuwe Map",
         "CurrentPath": "Huidige pad",
-        "Delete": "Verwijder",
         "DeleteDirectory": "Verwijder map",
         "DeleteDirectoryQuestion": "Weet je zeker dat je de \"{name}\" map wil verwijderen met alle inhoud?",
         "DeleteSelectedQuestion": "Weet je zeker dat je {count} geselecteerde bestanden wil verwijderen?",

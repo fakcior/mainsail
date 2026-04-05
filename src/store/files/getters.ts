@@ -9,22 +9,23 @@ import { GetterTree } from 'vuex'
 import { FileState, FileStateFile, FileStateGcodefile } from '@/store/files/types'
 import { ServerHistoryStateJob } from '@/store/server/history/types'
 import { escapePath } from '@/plugins/helpers'
+import { RootState } from '@/store/types'
 
-// eslint-disable-next-line
-export const getters: GetterTree<FileState, any> = {
+export const getters: GetterTree<FileState, RootState> = {
     getDirectory: (state) => (requestedPath: string) => {
-        if (requestedPath.startsWith('/')) requestedPath = requestedPath.substr(1)
-        if (requestedPath.endsWith('/')) requestedPath = requestedPath.substr(0, requestedPath.length - 1)
+        if (requestedPath.startsWith('/')) requestedPath = requestedPath.substring(1)
+        if (requestedPath.endsWith('/')) requestedPath = requestedPath.substring(0, requestedPath.length - 1)
 
         const findDirectory = function (filetree: FileStateFile, pathArray: string[]): FileStateFile | null {
             if (pathArray.length) {
                 const newFiletree = filetree?.childrens?.find(
                     (element: FileStateFile) => element.isDirectory && element.filename === pathArray[0]
                 )
-                if (newFiletree) {
-                    pathArray.shift()
-                    return findDirectory(newFiletree, pathArray)
-                } else return null
+
+                if (!newFiletree) return null
+
+                pathArray.shift()
+                return findDirectory(newFiletree, pathArray)
             }
 
             return filetree
@@ -47,11 +48,9 @@ export const getters: GetterTree<FileState, any> = {
             const rootGcodes = getters['getDirectory']('gcodes')
             if (rootGcodes === null) return []
 
-            let baseURL = `${rootGetters['socket/getUrl']}/server/files/gcodes`
             let files: FileStateFile[] = []
 
             if (path !== null) {
-                baseURL += escapePath(path)
                 const directory = getters['getDirectory']('gcodes' + path)
                 files = directory?.childrens ?? []
             } else {
@@ -84,16 +83,21 @@ export const getters: GetterTree<FileState, any> = {
                 // END filter != gcode files or dirs
             })
 
+            const gcodes = Object.keys(rootState.printer?.gcode?.commands ?? {})
+            const preheat_gcode_objects = [
+                { name: 'first_layer_extr_temp', gcode: 'M104' },
+                { name: 'first_layer_bed_temp', gcode: 'M140' },
+                { name: 'chamber_temp', gcode: 'M141' },
+            ].filter((obj) => gcodes.includes(obj.gcode))
+
             // build gcode files array with all data in one array
             const output: FileStateGcodefile[] = []
             files.forEach((file: FileStateFile) => {
                 const fileTimestamp = typeof file.modified.getTime === 'function' ? file.modified.getTime() : 0
                 const tmp: FileStateGcodefile = {
                     ...file,
+                    full_filename: path ? path + '/' + file.filename : file.filename,
                     preheat_gcode: null,
-                    small_thumbnail: null,
-                    big_thumbnail: null,
-                    big_thumbnail_width: null,
                     count_printed: 0,
                     last_start_time: null,
                     last_end_time: null,
@@ -104,11 +108,6 @@ export const getters: GetterTree<FileState, any> = {
                 }
 
                 const preheat_gcode_array: string[] = []
-                const preheat_gcode_objects = [
-                    { name: 'first_layer_extr_temp', gcode: 'M104' },
-                    { name: 'first_layer_bed_temp', gcode: 'M140' },
-                ]
-
                 preheat_gcode_objects.forEach((object) => {
                     if (object.name in file && file[object.name] > 1) {
                         preheat_gcode_array.push(`${object.gcode} S${file[object.name]}`)
@@ -119,37 +118,8 @@ export const getters: GetterTree<FileState, any> = {
                     tmp.preheat_gcode = preheat_gcode_array.join('\n')
                 }
 
-                if (file.thumbnails?.length) {
-                    let subdirectory = ''
-                    if (path === null) {
-                        const pos = file.filename.lastIndexOf('/')
-                        if (pos > 0) subdirectory = '/' + file.filename.slice(0, pos)
-                    }
-
-                    const small_thumbnail = file.thumbnails.find(
-                        (thumb) =>
-                            thumb.width >= thumbnailSmallMin &&
-                            thumb.width <= thumbnailSmallMax &&
-                            thumb.height >= thumbnailSmallMin &&
-                            thumb.height <= thumbnailSmallMax
-                    )
-
-                    if (small_thumbnail && 'relative_path' in small_thumbnail) {
-                        tmp.small_thumbnail = `${baseURL}${escapePath(subdirectory + '/' + small_thumbnail.relative_path)}?timestamp=${fileTimestamp}`
-                    }
-
-                    const big_thumbnail = file.thumbnails.find((thumb) => thumb.width >= thumbnailBigMin)
-
-                    if (big_thumbnail && 'relative_path' in big_thumbnail) {
-                        tmp.big_thumbnail = `${baseURL}${escapePath(subdirectory + '/' + big_thumbnail.relative_path)}?timestamp=${fileTimestamp}`
-
-                        tmp.big_thumbnail_width = big_thumbnail.width
-                    }
-                }
-
-                const fullFilename = path && path.length ? path + '/' + file.filename : file.filename
                 let histories = rootGetters['server/history/getPrintJobsForGcodes'](
-                    fullFilename,
+                    tmp.full_filename,
                     fileTimestamp,
                     file.size,
                     file.uuid ?? null,

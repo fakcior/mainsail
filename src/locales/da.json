@@ -86,7 +86,6 @@
             "UploadPrint": "Upload & Print"
         },
         "TopCornerMenu": {
-            "Cancel": "Annuller",
             "ConfirmationDialog": {
                 "Description": {
                     "HostReboot": "Hvis du genstarter værten nu, vil det igangværende print fejle!",
@@ -121,7 +120,6 @@
             "Stop": "Stop"
         },
         "UpdateDialog": {
-            "Close": "Luk",
             "Empty": "Tøm",
             "Recovering": "Gendanner {software}...",
             "RecoveringDone": "Gendannelse af {software} udført!",
@@ -140,6 +138,14 @@
         "ScrewName": "Skrue Navn",
         "ScrewOutput": "{current} af {max}"
     },
+    "Buttons": {
+        "Cancel": "Annuller",
+        "Close": "Luk",
+        "Delete": "Slet",
+        "No": "Nej",
+        "Save": "Gem",
+        "Yes": "Ja"
+    },
     "ConnectionDialog": {
         "CannotConnectTo": "Kan ikke forbinde med Moonraker ({host}).",
         "CheckMoonrakerLog": "Hvis denne besked vises flere gange, kig da i logfilen her:",
@@ -153,14 +159,11 @@
         "Empty": "Tom",
         "HideTemperatures": "Skjul temperaturer",
         "HideTimelapse": "Skjul Timelapse",
-        "SendCode": "Send kode...",
         "SetupConsole": "Terminalindstillinger"
     },
     "CoolDownDialog": {
         "AreYouSure": "Er du sikker?",
-        "CoolDown": "Nedkøling",
-        "No": "Nej",
-        "Yes": "Ja"
+        "CoolDown": "Nedkøling"
     },
     "DevicesDialog": {
         "CanBusInfo": "Kun ikke tildelte nodes kan findes. Det anbefales kun at have én ikke tildelt enhed forbundet til CanBus for at undgå kommunikationsproblemer. For flere detaljer, klik på linket:",
@@ -178,7 +181,6 @@
     },
     "Dialogs": {
         "StartPrint": {
-            "Cancel": "Annuller",
             "DoYouWantToStartFilename": "Vil du begynde at printe: {filename}?",
             "DoYouWantToStartFilenameFilament": "Vil du begynde at printe {filename} med dette filament?",
             "Headline": "Start print",
@@ -203,16 +205,13 @@
     },
     "EmergencyStopDialog": {
         "AreYouSure": "Er du sikker?",
-        "EmergencyStop": "Nødstop",
-        "No": "Nej",
-        "Yes": "Ja"
+        "EmergencyStop": "Nødstop"
     },
     "Files": {
         "AddBatchToQueue": "tilføj batch til kø",
         "AddToQueue": "Tilføj til kø",
         "AllFiles": "Alle",
         "BedTemp": "Bed temperatur.",
-        "Cancel": "Annuller",
         "ChamberTemp": "Indelukke temperatur.",
         "Count": "Tæl",
         "Create": "Opret",
@@ -229,7 +228,6 @@
         "EditFile": "Rediger Fil",
         "Empty": "Tom",
         "ExtruderTemp": "Hotend temperatur.",
-        "Filament": "Filament",
         "FilamentName": "Filament navn",
         "FilamentType": "Filament type",
         "FilamentUsage": "Filament forbrug",
@@ -309,7 +307,6 @@
         "VoxelMode": "Voxel Mode (ASMBL)"
     },
     "Heightmap": {
-        "Abort": "Afbryd",
         "BedMeshCalibrate": "Kalibrer Bed Mesh",
         "BedMeshRemove": "Slet Bed Mesh",
         "Calibrate": "Kalibrer",
@@ -331,19 +328,14 @@
         "InvalidNameAscii": "Navnet er ugyldigt. Der kan kun bruges ascii karakterer.",
         "InvalidNameEmpty": "Feltet må ikke være tomt!",
         "InvalidNameReserved": "Profilnavnet 'default' er reserveret af systemet, vælg venligst et andet profilnavn.",
-        "Later": "Senere",
         "Mesh": "Mesh",
         "Name": "Navn",
         "NoBedMeshHasBeenLoadedYet": "Intet Bed Mesh indlæst.",
         "NoProfile": "Ingen profil tilgængelig",
-        "Ok": "Ok",
         "Probed": "Målt",
         "Profiles": "Profiler",
-        "Remove": "Fjern",
-        "RemoveSaveDescription": "Profilen er markeret til sletning. Klik på GEM KONFIGURATIONfor at fjerne den fra printer.cfg og genstarte Klipper.",
         "Rename": "Omdøb",
         "RenameBedMeshProfile": "Omdøb Bed Mesh profil",
-        "SAVE_CONFIG": "GEM KONFIGURATION",
         "ScaleGradient": "Skala graduering",
         "ScaleZMax": "Skalér til z-max.",
         "TitleCalibrate": "Kalibrer nyt Bed Mesh",
@@ -358,7 +350,6 @@
         "AddToQueueSuccessful": "Filen {filename} tilføjet til Køen.",
         "AllJobs": "Alle job",
         "AvgPrinttime": "Gns. printtid",
-        "Cancel": "Annuller",
         "Chart": "Skema",
         "CreateNote": "Gem note",
         "DateBasedReminder": "Dato",
@@ -421,7 +412,6 @@
         "Reminder": "Påmindelse",
         "Repeat": "Gentag",
         "Reprint": "Print igen",
-        "Save": "Gem",
         "Search": "Søg",
         "SelectedFilamentUsed": "Filament brugt på valgte",
         "SelectedJobs": "Valgte jobs",
@@ -451,15 +441,12 @@
         "TotalTime": "Total Tid"
     },
     "JobQueue": {
-        "AllJobs": "Alle Jobs",
-        "Cancel": "Annuller",
         "ChangeCount": "Ændre antal",
         "Count": "Tæl",
         "Empty": "Tom",
         "InvalidCountEmpty": "Input må ikke være tom!",
         "InvalidCountGreaterZero": "Input skal være over 0!",
         "JobQueue": "Jobkø",
-        "Jobs": "Jobs",
         "Pause": "Pause",
         "RemoveFromQueue": "Fjern fra køen",
         "Start": "Start",
@@ -468,14 +455,12 @@
     "Machine": {
         "ConfigFilesPanel": {
             "AllFiles": "Alle",
-            "Cancel": "Annuller",
             "ConfigFiles": "Konfigurationsfiler",
             "ConfigRootDirectoryDoesntExists": "Ingen konfiguration fundet. Tjek venligst opsætningen af \"config_path\" under [file_manager] sektionen af Moonraker konfigurationen.",
             "Create": "Ny",
             "CreateDirectory": "Ny mappe",
             "CreateFile": "Ny Fil",
             "CurrentPath": "Du er her",
-            "Delete": "Slet",
             "DeleteDirectory": "Slet mappe",
             "DeleteDirectoryQuestion": "Vil du slette mappen \"{name}\" og alt dens indhold?",
             "DeleteSelectedQuestion": "Vil du slette alle {count} valgte filer?",
@@ -514,7 +499,6 @@
         },
         "LogfilesPanel": {
             "Accept": "Acceptér",
-            "Cancel": "Annuller",
             "Logfiles": "Logfiler",
             "Rollover": "Nulstil log-filer",
             "RolloverDescription": "Vælg hvilke log-filer der skal nulstilles:",
@@ -550,7 +534,6 @@
             "Abort": "Afbryd",
             "AreYouSure": "Er du sikker?",
             "CheckForUpdates": "Tjek for opdateringer",
-            "Close": "Luk",
             "CommitHistory": "Forpligtelseshistorik",
             "Commits": "Forpligtelse",
             "CommitsAvailable": "Ingen commits tilgængelige | {count} commits tilgængelige | {count} commits tilgængelige",
@@ -695,7 +678,6 @@
             "PowerControl": "Strømstyring"
         },
         "SpoolmanPanel": {
-            "Cancel": "Annuller",
             "ChangeSpool": "Skift spool",
             "DaysAgo": "{days} dage siden",
             "EjectSpool": "Afmontér spole",
@@ -729,7 +711,6 @@
             "Estimate": "Estimeret",
             "ETA": "ETA",
             "ExcludeObject": {
-                "Cancel": "Annuller",
                 "Excluded": "Ekskluderet",
                 "ExcludeObject": "Ekskluder objekt",
                 "ExcludeObjectHeadline": "Ekskluder objekt",
@@ -737,10 +718,8 @@
             },
             "Filament": "Filament",
             "File": "Fil",
-            "Files": "Filer",
             "Flow": "Flow",
             "Headline": "Status",
-            "Jobqueue": "Jobkø",
             "JobqueueMoreFiles": "Ikke flere jobs | Et job til | {count} jobs tilbage",
             "Layer": "Lag",
             "Max": "maks",
@@ -765,7 +744,6 @@
             "ResumePrint": "Genoptag print",
             "Slicer": "Slicer",
             "Speed": "Hastighed",
-            "Status": "Status",
             "Total": "Total",
             "Unknown": "Ukendt"
         },
@@ -825,7 +803,6 @@
             "Headline": "Z-Offset",
             "Later": "Senere",
             "Ok": "OK",
-            "Save": "Gem",
             "SaveConfig": "GEM KONFIGURATION",
             "SaveInfoDescription": "Det nye z-offset er blevet beregnet og registreret. Klik på \"GEM KONFIGURATION\" for at gemme det nye z-offset i CONFIG og genstarte Klipper.",
             "SaveInfoDescriptionPrint": "Det nye z-offset er blevet beregnet og registreret. Klik på \"GEM KONFIGURATION\" i topbaren efter endt print for at gemme det nye z-offset i CONFIG og genstarte Klipper.",
@@ -834,10 +811,8 @@
     },
     "PowerDeviceChangeDialog": {
         "AreYouSure": "Er du sikker?",
-        "No": "Nej",
         "TurnDeviceOff": "Sluk {device}",
-        "TurnDeviceOn": "Tænd {device}",
-        "Yes": "Ja"
+        "TurnDeviceOn": "Tænd {device}"
     },
     "Router": {
         "Console": "Terminal",
@@ -881,8 +856,6 @@
         "YouCanFindMore": "Du kan finde flere detaljer her"
     },
     "Settings": {
-        "Cancel": "Annuller",
-        "Close": "Luk",
         "ConsoleTab": {
             "AddFilter": "Tilføj filter",
             "Console": "Terminal",
@@ -1048,6 +1021,7 @@
             "NOMacros": "Ingen makroer fundet...",
             "NoMacrosInGroup": "Ingen makroer i denne gruppe.",
             "Primary": "Primær",
+            "Search": "Søg",
             "Secondary": "Sekundær",
             "ShowInStatePaused": "Vis/skjul hvis printer er på pause.",
             "ShowInStatePrinting": "Vis/skjul hvis printer er aktiv.",
@@ -1077,9 +1051,7 @@
             "NoPresetFound": "Ingen forudindstilling fundet",
             "Presets": "Forudindstillinger",
             "Start": "Første",
-            "StartDescription": "Første LED i denne gruppe.",
-            "UnableToLoadLight": "Kunne ikke indlæse LED",
-            "UnableToLoadPreset": "Kunne ikke indlæse forudindstilling"
+            "StartDescription": "Første LED i denne gruppe."
         },
         "NavigationTab": {
             "Navigation": "Navigation"
@@ -1119,7 +1091,6 @@
             "Autorender": "Autorendering",
             "AutorenderDescription": "Hvis aktiv, vil Timelapse video automatisk blive renderet efter afsluttet print",
             "Camera": "Kamera",
-            "CameraDescription": "Vælg hvilket kamera der skal bruges",
             "CameraDescriptionWithSnapshotUrl": "Vælg hvilket kamera (med snapshot url) der skal bruges",
             "CameraWarningAlreadySet": "Denne værdi er allerede indstillet i Moonrakers konfigurationsfil.",
             "CameraWarningAlreadySetSmall": "snapshot url i [timelapse] sektionen",
@@ -1269,7 +1240,6 @@
             "IconMcu": "MCU",
             "IconNozzle": "Dyse",
             "IconPrinter": "Printer",
-            "Ipstream": "IP Kamera",
             "JMuxerStream": "Rå h264 stream (jmuxer)",
             "Mjpegstreamer": "MJPEG-Streamer",
             "MjpegstreamerAdaptive": "Adaptiv MJPEG-Streamer (eksperimental)",
@@ -1295,11 +1265,9 @@
     "Timelapse": {
         "AllFiles": "Alle",
         "Autorender": "Autorendering",
-        "Cancel": "Annuller",
         "Create": "Opret",
         "CreateNewDirectory": "Ny mappe",
         "CurrentPath": "Du er her",
-        "Delete": "Slet",
         "DeleteDirectory": "Slet mappe",
         "DeleteDirectoryQuestion": "Vil du slette mappen \"{name}\" og alt dens indhold?",
         "DeleteSelectedQuestion": "Er du sikker på du vil slette alle {count} valgte filer?",
