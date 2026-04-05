@@ -20,7 +20,6 @@ export interface ServerHistoryStateJob {
     end_time: number
     filament_used: number
     filename: string
-    // eslint-disable-next-line
     metadata: {
         print_start_time?: number
         job_id?: number
@@ -44,7 +43,7 @@ export interface ServerHistoryStateJob {
         modified?: number
         uuid?: string
         nozzle_diameter?: number
-        [key: string]: any
+        [key: string]: unknown
     }
     note?: string
     print_duration: number
@@ -89,6 +88,21 @@ export interface ServerHistoryStateAllPrintStatusEntry {
 }
 
 export type HistoryStatsValueNames = 'jobs' | 'filament' | 'time'
+
+export type HistoryListPanelColValue = Extract<
+    keyof ServerHistoryStateJob | keyof ServerHistoryStateJob['metadata'],
+    string
+>
+
+export interface HistoryListPanelCol {
+    text: string
+    value: HistoryListPanelColValue
+    align: string
+    configable: boolean
+    visible: boolean
+    filterable?: boolean
+    outputType?: string
+}
 
 export interface ServerHistoryStateJobWithCount extends ServerHistoryStateJob {
     count: number

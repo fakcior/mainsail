@@ -46,8 +46,6 @@ import { setAndLoadLocale } from './plugins/i18n'
 import TheMacroPrompt from '@/components/dialogs/TheMacroPrompt.vue'
 import { AppRoute } from '@/routes'
 
-Component.registerHooks(['metaInfo'])
-
 @Component({
     components: {
         TheMacroPrompt,
@@ -66,19 +64,12 @@ Component.registerHooks(['metaInfo'])
     },
 })
 export default class App extends Mixins(BaseMixin, ThemeMixin) {
-    public metaInfo(): any {
+    get title(): string {
         let title = this.$store.getters['getTitle']
 
         if (this.isPrinterPowerOff) title = this.$t('App.Titles.PrinterOff')
 
-        return {
-            title,
-            titleTemplate: '%s',
-        }
-    }
-
-    get title(): string {
-        return this.$store.getters['getTitle']
+        return title
     }
 
     get naviDrawer(): boolean {
@@ -90,7 +81,7 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     get mainStyle() {
-        let style: any = {
+        const style: Record<string, string> = {
             paddingLeft: '0',
         }
 
@@ -140,7 +131,7 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
     }
 
     get primaryTextColor(): string {
-        let splits = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.primaryColor)
+        const splits = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.primaryColor)
         if (splits) {
             const r = parseInt(splits[1], 16) * 0.2126
             const g = parseInt(splits[2], 16) * 0.7152
@@ -186,6 +177,11 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
 
     get progressAsFavicon() {
         return this.$store.state.gui.uiSettings.progressAsFavicon
+    }
+
+    @Watch('title', { immediate: true })
+    titleChanged(newVal: string): void {
+        document.title = newVal
     }
 
     @Watch('language')
@@ -240,9 +236,9 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
 
         // if progressAsFavicon is enabled and the printer is printing, draw the progress as favicon
         if (this.progressAsFavicon && this.printerIsPrinting) {
-            let faviconSize = 64
+            const faviconSize = 64
 
-            let canvas = document.createElement('canvas')
+            const canvas = document.createElement('canvas')
             canvas.width = faviconSize
             canvas.height = faviconSize
             const context = canvas.getContext('2d')
@@ -263,9 +259,9 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
             context.stroke()
 
             // draw the green circle based on percentage
-            let startAngle = 1.5 * Math.PI
+            const startAngle = 1.5 * Math.PI
             let endAngle = 0
-            let unitValue = (Math.PI - 0.5 * Math.PI) / 25
+            const unitValue = (Math.PI - 0.5 * Math.PI) / 25
             if (val >= 0 && val <= 25) endAngle = startAngle + val * unitValue
             else if (val > 25 && val <= 50) endAngle = startAngle + val * unitValue
             else if (val > 50 && val <= 75) endAngle = startAngle + val * unitValue

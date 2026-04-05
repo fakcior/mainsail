@@ -11,11 +11,10 @@
             :index="group.start"
             @click-button="showDialog = true" />
         <miscellaneous-light-neopixel-dialog
-            :show-dialog="showDialog"
+            v-model="showDialog"
             :type="type"
             :name="name"
             :index="group.start"
-            @close="showDialog = false"
             @update-color="sendCommand" />
     </v-subheader>
 </template>
@@ -101,7 +100,7 @@ export default class MiscellaneousLightNeopixelGroup extends Mixins(BaseMixin) {
 
         commandParts.push('SYNC=0')
 
-        let lines = []
+        const lines = []
         const command = commandParts.join(' ')
         for (let i = this.group.start; i <= this.group.end; i++) {
             lines.push(`${command} INDEX=${i}`)

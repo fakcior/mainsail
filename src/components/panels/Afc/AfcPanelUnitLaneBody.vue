@@ -18,26 +18,25 @@
                         {{ spoolFilamentName }}
                     </span>
                 </v-tooltip>
-                <spoolman-change-spool-dialog
-                    :show-dialog="showSpoolmanDialog"
-                    :afc-lane="name"
-                    @close="showSpoolmanDialog = false" />
-                <afc-unit-lane-filament-dialog
-                    :show="showFilamentDialog"
-                    :name="name"
-                    @close="showFilamentDialog = false" />
+                <spoolman-change-spool-dialog v-if="afcExistsSpoolman" v-model="showSpoolmanDialog" :afc-lane="name" />
+                <afc-unit-lane-filament-dialog v-model="showFilamentDialog" :name="name" />
             </v-col>
             <v-col class="pr-6 pl-2 pt-0 pb-0 d-flex flex-column justify-space-between align-end">
                 <v-btn v-if="afcShowLaneInfinite" x-small @click="showInfintiyDialog = true">
                     <v-icon v-if="runoutLane === 'NONE'" color="error" small>{{ afcIconInfintiy }}</v-icon>
                     <template v-else>{{ runoutLane }}</template>
                 </v-btn>
-                <afc-unit-lane-infinite-dialog
-                    :show="showInfintiyDialog"
-                    :name="name"
-                    @close="showInfintiyDialog = false" />
+                <afc-unit-lane-infinite-dialog v-model="showInfintiyDialog" :name="name" />
                 <span class="font-weight-bold">{{ spoolMaterial }}</span>
                 <span class="text--disabled">{{ spoolRemainingWeightOutput }}</span>
+                <v-tooltip v-if="hasTd" top>
+                    <template #activator="{ on, attr }">
+                        <span class="d-flex align-center justify-center text--disabled" v-bind="attr" v-on="on">
+                            TD: {{ tdValue }}
+                        </span>
+                    </template>
+                    <span>{{ $t('Panels.AfcPanel.Color') }}: #{{ tdColor }}</span>
+                </v-tooltip>
             </v-col>
         </v-row>
         <v-row v-if="afcShowFilamentName" class="mb-0 mt-n3">
@@ -96,6 +95,8 @@ export default class AfcPanelUnitLaneBody extends Mixins(BaseMixin, AfcMixin) {
     }
 
     get spoolColor() {
+        if (this.hasTd && this.showTd1Color) return `#${this.tdColor}`
+
         return this.lane.color || '#000000'
     }
 
@@ -127,6 +128,22 @@ export default class AfcPanelUnitLaneBody extends Mixins(BaseMixin, AfcMixin) {
 
     get spoolFilamentName() {
         return this.spool?.filament?.name ?? 'Unknown'
+    }
+
+    get showTd1Color(): boolean {
+        return this.$store.state.gui.view.afc?.showTd1Color ?? true
+    }
+
+    get hasTd() {
+        return (this.lane?.td1_td || null) !== null
+    }
+
+    get tdValue() {
+        return this.lane?.td1_td || '--'
+    }
+
+    get tdColor() {
+        return this.lane?.td1_color || '------'
     }
 
     onFilamentClick() {

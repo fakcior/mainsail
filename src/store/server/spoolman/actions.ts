@@ -3,7 +3,7 @@ import { ActionTree } from 'vuex'
 import { RootState } from '@/store/types'
 import { ServerSpoolmanState } from '@/store/server/spoolman/types'
 
-function convertV2response(payload: { error?: { message: string } | null; response: any }) {
+function convertV2response(payload: { error?: { message: string } | null; response?: unknown }) {
     if ((payload.error?.message ?? null) !== null) {
         Vue.$toast.error(payload.error?.message ?? 'unknown spoolman error')
         return null
@@ -56,6 +56,10 @@ export const actions: ActionTree<ServerSpoolmanState, RootState> = {
         dispatch('socket/addInitModule', 'server/spoolman/getVendors', { root: true })
 
         dispatch('socket/removeInitModule', 'server/spoolman/init', { root: true })
+
+        // init load spools, but don't wait for it to finish
+        // this is needed because HappyHare or AFC need this data to display all spool data
+        dispatch('refreshSpools')
     },
 
     getActiveSpoolId({ commit, dispatch }, payload) {

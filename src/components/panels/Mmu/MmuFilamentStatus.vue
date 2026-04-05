@@ -1,5 +1,5 @@
 <template>
-    <svg ref="filStatusSvg" viewBox="140 20 285 421" preserveAspectRatio="xMidYMid meet" class="svg-colors">
+    <svg ref="filStatusSvg" viewBox="140 0 285 441" preserveAspectRatio="xMidYMid meet" class="svg-colors">
         <defs>
             <g
                 id="sync-feedback"
@@ -19,6 +19,15 @@
                 <rect x="3" y="0" width="30" height="40" rx="3" ry="3" fill="none" stroke-width="1.5" />
                 <path d="M-15 -4 L-6 0 L-15 4 Z" stroke-width="1" fill-opacity="0.6" />
                 <path d="M8 40 L 28 40" stroke-width="4" />
+                <text
+                    v-if="hasFilamentProportionalSensor"
+                    x="-22"
+                    y="4"
+                    font-size="11px"
+                    text-anchor="end"
+                    style="fill: var(--color-outline)">
+                    {{ syncFeedbackPistonText }}
+                </text>
             </g>
             <g
                 id="sync-feedback-buffer-box"
@@ -64,6 +73,10 @@
                     vector-effect="non-scaling-stroke" />
             </g>
         </defs>
+
+        <text x="282" y="18" font-size="16px" text-anchor="middle">
+            {{ statusText }}
+        </text>
 
         <rect x="150" y="30" width="265" height="130" class="zone-background" rx="10" ry="10" />
         <rect x="150" y="333" width="265" height="66" class="zone-background" rx="10" ry="10" />
@@ -196,7 +209,11 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import { capitalize } from '@/plugins/helpers'
 import MmuMixin, {
+    ACTION_IDLE,
+    ACTION_LOADING,
+    ACTION_UNLOADING,
     ACTION_CUTTING_FILAMENT,
     ACTION_CUTTING_TIP,
     ACTION_FORMING_TIP,
@@ -241,8 +258,6 @@ const POSITIONS = {
     CUT_POINT: 355,
     NOZZLE_START: 371,
 } as const
-
-const BOWDEN_RANGE = 173
 
 @Component({
     components: {
@@ -294,22 +309,13 @@ export default class MmuFilamentStatus extends Mixins(BaseMixin, MmuMixin) {
             [FILAMENT_POS_START_BOWDEN, FILAMENT_POS_IN_BOWDEN].includes(this.mmuFilamentPos) &&
             this.bowdenProgress >= 0
         ) {
-            return POSITIONS.START_BOWDEN + (BOWDEN_RANGE * this.bowdenProgress) / 100
+            const bowdenRange = this.endOfBowdenPos - POSITIONS.START_BOWDEN
+            return POSITIONS.START_BOWDEN + (bowdenRange * this.bowdenProgress) / 100
         }
 
         if (this.mmuFilamentPos === FILAMENT_POS_START_BOWDEN) return POSITIONS.START_BOWDEN
         if (this.mmuFilamentPos === FILAMENT_POS_IN_BOWDEN) return POSITIONS.MID_BOWDEN
-
-        if (this.mmuFilamentPos === FILAMENT_POS_END_BOWDEN) {
-            if (
-                this.configGateHomingEndstop === 'none' ||
-                (this.toolheadSensor !== undefined && this.toolheadSensor !== null && !this.configExtruderForceHoming)
-            )
-                return POSITIONS.EXTRUDER_ENTRANCE
-
-            return POSITIONS.END_BOWDEN
-        }
-
+        if (this.mmuFilamentPos === FILAMENT_POS_END_BOWDEN) return this.endOfBowdenPos
         if (this.mmuFilamentPos === FILAMENT_POS_HOMED_ENTRY) return POSITIONS.EXTRUDER
         if (this.mmuFilamentPos === FILAMENT_POS_HOMED_EXTRUDER) return POSITIONS.EXTRUDER_ENTRANCE
         if (this.mmuFilamentPos === FILAMENT_POS_EXTRUDER_ENTRY) return POSITIONS.BEFORE_TOOLHEAD
@@ -323,6 +329,17 @@ export default class MmuFilamentStatus extends Mixins(BaseMixin, MmuMixin) {
         if (this.mmuFilamentPos === FILAMENT_POS_LOADED) return POSITIONS.NOZZLE_START
 
         return POSITIONS.UNKNOWN
+    }
+
+    get endOfBowdenPos() {
+        if (typeof this.toolheadSensor === 'boolean' && !this.configExtruderForceHoming) return POSITIONS.END_BOWDEN
+
+        const extruderHomingEndstops = ['none', 'collision', 'mmu_gear_touch', 'filament_compression']
+        if (extruderHomingEndstops.includes(this.configExtruderHomingEndstop)) return POSITIONS.EXTRUDER_ENTRANCE
+
+        if (this.configExtruderHomingEndstop === 'extruder') return POSITIONS.EXTRUDER
+
+        return POSITIONS.END_BOWDEN
     }
 
     get bowdenProgress() {
@@ -349,6 +366,10 @@ export default class MmuFilamentStatus extends Mixins(BaseMixin, MmuMixin) {
         return (this.$store.state.printer.configfile.config.mmu?.extruder_force_homing ?? 0) === 1
     }
 
+    get configExtruderHomingEndstop() {
+        return this.mmuSettings?.extruder_homing_endstop ?? 'none'
+    }
+
     get gateSensorName() {
         const unit = this.getMmuMachineUnit(this.mmuUnit)
         const multiGate = unit?.multi_gear ?? false
@@ -357,7 +378,7 @@ export default class MmuFilamentStatus extends Mixins(BaseMixin, MmuMixin) {
     }
 
     get toolClass() {
-        return this.mmuGate === TOOL_GATE_BYPASS ? 'tool-bypass' : 'tool-text'
+        return this.mmuTool === TOOL_GATE_BYPASS ? 'tool-bypass' : 'tool-text'
     }
 
     get toolText() {
@@ -413,6 +434,49 @@ export default class MmuFilamentStatus extends Mixins(BaseMixin, MmuMixin) {
     get isGripped() {
         return this.mmuGrip === 'Gripped' || this.mmuServo === 'Down'
     }
+
+    get slicerToolMap() {
+        return this.mmu?.slicer_tool_map ?? undefined
+    }
+
+    get syncFeedbackPistonText() {
+        return (this.mmu?.sync_feedback_bias_modelled ?? 0.0).toFixed(2)
+    }
+
+    get totalToolchanges() {
+        return this.slicerToolMap?.total_toolchanges ?? 0
+    }
+
+    get numToolchanges() {
+        return this.mmu?.num_toolchanges ?? 0
+    }
+
+    get statusText() {
+        if (['complete', 'error', 'cancelled', 'started'].includes(this.mmuPrintState)) {
+            return capitalize(this.mmuPrintState)
+        }
+
+        if ([ACTION_LOADING, ACTION_UNLOADING].includes(this.mmuAction)) {
+            return `${this.mmuAction}: ${this.filamentPosition}mm`
+        }
+
+        if (this.mmuAction !== ACTION_IDLE) return this.mmuAction
+
+        if (this.mmuPrintState === 'printing') {
+            let str = `Printing (${this.numToolchanges}`
+            if (this.totalToolchanges > 0) str += `/${this.totalToolchanges}`
+            str += ' swaps)'
+            return str
+        }
+
+        const filament = this.mmu?.filament ?? 'Unknown'
+
+        return filament !== 'Unloaded' ? `Filament: ${this.filamentPosition}mm` : 'Filament: Unloaded'
+    }
+
+    get filamentPosition() {
+        return (this.mmu?.filament_position ?? 0).toFixed(1)
+    }
 }
 </script>
 
@@ -452,8 +516,8 @@ html.theme--light .fil-background {
 }
 
 .tool-bypass {
-    font-size: 16px;
-    font-weight: normal;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 @keyframes fadeInOut {

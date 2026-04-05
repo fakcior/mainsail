@@ -126,8 +126,7 @@ export default class BaseMixin extends Vue {
     get isIOS() {
         return !!(
             navigator.userAgent.match(/(iPad|iPhone|iPod)/) ||
-            // @ts-ignore
-            (navigator.platform === 'MacIntel' && typeof navigator.standalone !== 'undefined')
+            (navigator.platform === 'MacIntel' && 'standalone' in navigator)
         )
     }
 
@@ -139,6 +138,24 @@ export default class BaseMixin extends Vue {
         const roots = this.$store.state.server.registered_directories
 
         return roots.findIndex((root: string) => root === 'gcodes') >= 0
+    }
+
+    get spoolManagerUrl() {
+        const baseurl = this.$store.state.server.config.config?.spoolman?.server ?? undefined
+        if (!baseurl) return undefined
+
+        try {
+            const url = new URL(baseurl)
+            if (['localhost', '127.0.0.1', '::1'].includes(url.hostname)) {
+                url.hostname = this.$store.state.socket.hostname
+            }
+
+            return url.toString()
+        } catch {
+            window.console.warn('[Spoolman]: SpoolManager URL is invalid:', baseurl)
+
+            return undefined
+        }
     }
 
     get formatTimeOptions(): DateTimeFormatOptions {
@@ -184,9 +201,8 @@ export default class BaseMixin extends Vue {
         let tmp: Date | null = null
 
         try {
-            // @ts-ignore
-            tmp = (typeof value.getMonth === 'function' ? value : new Date(value)) as Date
-        } catch (_) {
+            tmp = value instanceof Date ? value : new Date(value)
+        } catch {
             return 'UNKNOWN'
         }
 
@@ -214,10 +230,10 @@ export default class BaseMixin extends Vue {
                     output.push(`${tmp?.getDate()}`)
                     break
                 case 'mm':
-                    output.push((tmp?.getMonth() ?? 0).toString().padStart(2, '0'))
+                    output.push(((tmp?.getMonth() ?? 0) + 1).toString().padStart(2, '0'))
                     break
                 case 'm':
-                    output.push(`${tmp?.getMonth() ?? 0}`)
+                    output.push(`${(tmp?.getMonth() ?? 0) + 1}`)
                     break
                 case 'yyyy':
                     output.push(`${tmp?.getFullYear()}`)
@@ -236,12 +252,11 @@ export default class BaseMixin extends Vue {
     }
 
     formatTime(value: number | Date, boolSeconds = false): string {
-        let tmp = null
+        let tmp
 
         try {
-            // @ts-ignore
-            tmp = (typeof value.getMonth === 'function' ? value : new Date(value)) as Date
-        } catch (_) {
+            tmp = value instanceof Date ? value : new Date(value)
+        } catch {
             return 'UNKNOWN'
         }
 

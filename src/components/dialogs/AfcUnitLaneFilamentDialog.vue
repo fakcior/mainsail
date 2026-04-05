@@ -1,5 +1,5 @@
 <template>
-    <v-dialog :value="show" width="400" @click:outside="closeDialog">
+    <v-dialog v-model="showDialog" width="400">
         <panel
             :title="$t('Panels.AfcPanel.FilamentForLane', { name })"
             :icon="afcIconLogo"
@@ -33,7 +33,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn text color="disabled" @click="closeDialog">{{ $t('Panels.AfcPanel.Cancel') }}</v-btn>
+                <v-btn text color="disabled" @click="closeDialog">{{ $t('Buttons.Cancel') }}</v-btn>
                 <v-btn :disabled="disableSetBtn" color="primary" text @click="setSpool">
                     {{ $t('Panels.AfcPanel.SetSpool') }}
                 </v-btn>
@@ -43,13 +43,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import Panel from '@/components/ui/Panel.vue'
 import { mdiCloseThick } from '@mdi/js'
 import AfcMixin from '@/components/mixins/afc'
 import { afcIconLogo } from '@/plugins/afcIcons'
-import { VColorPickerColor } from 'vuetify/src/components/VColorPicker/util'
+import { VColorPickerColor } from '@/types/vuetify'
 import { Debounce } from 'vue-debounce-decorator'
 
 @Component({
@@ -59,7 +59,7 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(BaseMixin, AfcMixi
     afcIconLogo = afcIconLogo
     mdiCloseThick = mdiCloseThick
 
-    @Prop({ type: Boolean, required: true }) readonly show!: boolean
+    @VModel({ type: Boolean }) showDialog!: boolean
     @Prop({ type: String, required: true }) readonly name!: string
 
     color = '#000000'
@@ -71,7 +71,7 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(BaseMixin, AfcMixi
     }
 
     get currentColor() {
-        return this.lane.color ?? '#000000'
+        return this.lane.color || '#000000'
     }
 
     get currentMaterial() {
@@ -115,11 +115,11 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(BaseMixin, AfcMixi
     }
 
     closeDialog() {
-        this.$emit('close')
+        this.showDialog = false
     }
 
-    @Watch('show')
-    onShowChange(newValue: boolean) {
+    @Watch('showDialog')
+    onShowDialogChange(newValue: boolean) {
         if (!newValue) return
 
         this.color = this.currentColor

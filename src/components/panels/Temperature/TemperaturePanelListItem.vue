@@ -1,5 +1,5 @@
 <template>
-    <tr v-longpress:600="(e) => openContextMenu(e)" @contextmenu.prevent="openContextMenu($event)">
+    <tr v-longpress:600="openContextMenu" @contextmenu.prevent="openContextMenu($event)">
         <td class="icon">
             <v-icon :color="iconColor" :class="iconClass" tabindex="-1" @click="openEditDialog">
                 {{ icon }}
@@ -46,17 +46,17 @@
                 :min_temp="min_temp"
                 :max_temp="max_temp"
                 :command="command"
+                :input-digits="inputDigits"
                 :attribute-name="commandAttributeName" />
         </td>
         <temperature-panel-list-item-edit
-            :bool-show="showEditDialog"
+            v-model="showEditDialog"
             :object-name="objectName"
             :name="name"
             :format-name="formatName"
             :additional-sensor-name="additionalSensorName"
             :icon="icon"
-            :color="color"
-            @close-dialog="showEditDialog = false" />
+            :color="color" />
         <v-menu v-model="showContextMenu" :position-x="contextMenuX" :position-y="contextMenuY" absolute offset-y>
             <v-list>
                 <v-list-item v-if="isHeater" :disabled="!isHeaterActive" @click="turnOffHeater">
@@ -75,6 +75,7 @@
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins, Prop } from 'vue-property-decorator'
+import type { LongpressEvent } from '@/directives/longpress'
 import BaseMixin from '@/components/mixins/base'
 import { convertName } from '@/plugins/helpers'
 import {
@@ -90,7 +91,7 @@ import {
     mdiThermometer,
 } from '@mdi/js'
 import { additionalSensors, opacityHeaterActive, opacityHeaterInactive } from '@/store/variables'
-import { CLOSE_TEMPERATURE_CONTEXT_MENU, EventBus } from '@/plugins/eventBus'
+import { CLOSE_CONTEXT_MENU, EventBus } from '@/plugins/eventBus'
 
 @Component
 export default class TemperaturePanelListItem extends Mixins(BaseMixin) {
@@ -99,6 +100,7 @@ export default class TemperaturePanelListItem extends Mixins(BaseMixin) {
 
     @Prop({ type: String, required: true }) readonly objectName!: string
     @Prop({ type: Boolean, required: true }) readonly isResponsiveMobile!: boolean
+    @Prop({ type: Number, default: 3 }) readonly inputDigits!: number
 
     showEditDialog = false
     showContextMenu = false
@@ -305,15 +307,15 @@ export default class TemperaturePanelListItem extends Mixins(BaseMixin) {
     }
 
     mounted() {
-        EventBus.$on(CLOSE_TEMPERATURE_CONTEXT_MENU, this.closeContextMenu)
+        EventBus.$on(CLOSE_CONTEXT_MENU, this.closeContextMenu)
     }
 
     beforeDestroy() {
-        EventBus.$off(CLOSE_TEMPERATURE_CONTEXT_MENU, this.closeContextMenu)
+        EventBus.$off(CLOSE_CONTEXT_MENU, this.closeContextMenu)
     }
 
-    openContextMenu(event: MouseEvent) {
-        EventBus.$emit(CLOSE_TEMPERATURE_CONTEXT_MENU)
+    openContextMenu(event: MouseEvent | LongpressEvent) {
+        EventBus.$emit(CLOSE_CONTEXT_MENU)
 
         this.showContextMenu = true
         this.contextMenuX = event?.clientX || event?.pageX || window.screenX / 2

@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="boolShowDialog" persistent :max-width="800" :fullscreen="isMobile">
+    <v-dialog v-model="showDialog" persistent :max-width="800" :fullscreen="isMobile">
         <panel
             :title="$t('Machine.UpdatePanel.Commits')"
             :icon="mdiUpdate"
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import {
     ServerUpdateManagerStateGitRepo,
@@ -61,7 +61,7 @@ export default class GitCommitsList extends Mixins(BaseMixin) {
     mdiUpdate = mdiUpdate
     mdiCloseThick = mdiCloseThick
 
-    @Prop({ required: true }) readonly boolShowDialog!: boolean
+    @VModel({ type: Boolean }) showDialog!: boolean
     @Prop({ required: true }) readonly repo!: ServerUpdateManagerStateGitRepo | null
 
     get commitsBehind(): ServerUpdateManagerStateGitRepoCommit[] {
@@ -69,10 +69,10 @@ export default class GitCommitsList extends Mixins(BaseMixin) {
     }
 
     get groupedCommits() {
-        let output: ServerUpdateManagerStateGitRepoGroupedCommits[] = []
+        const output: ServerUpdateManagerStateGitRepoGroupedCommits[] = []
         let lastCommit: ServerUpdateManagerStateGitRepoCommit | null = null
 
-        this.commitsBehind.forEach((commit: any) => {
+        this.commitsBehind.forEach((commit: ServerUpdateManagerStateGitRepoCommit) => {
             const lastCommitDate = new Date((lastCommit?.date ?? 0) * 1000)
             const commitDate = new Date(commit.date * 1000)
 
@@ -125,7 +125,7 @@ export default class GitCommitsList extends Mixins(BaseMixin) {
     }
 
     closeDialog() {
-        this.$emit('close-dialog')
+        this.showDialog = false
     }
 }
 </script>

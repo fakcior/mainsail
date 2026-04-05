@@ -11,7 +11,6 @@ import buildVersion from './src/plugins/build-version'
 import buildReleaseInfo from './src/plugins/build-release_info'
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa'
 import postcssNesting from 'postcss-nesting'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 const PWAConfig: Partial<VitePWAOptions> = {
     registerType: 'autoUpdate',
@@ -19,16 +18,25 @@ const PWAConfig: Partial<VitePWAOptions> = {
     manifest: {
         name: 'Mainsail',
         short_name: 'Mainsail',
+        description: 'Web interface for Klipper 3D printer firmware',
         theme_color: '#D51F26',
+        display: 'standalone',
+        start_url: '/',
         background_color: '#121212',
         icons: [
             {
-                src: '/img/icons/icon-192-maskable.png',
+                src: '/img/icons/icon-192.png',
                 sizes: '192x192',
                 type: 'image/png',
             },
             {
-                src: '/img/icons/icon-512-maskable.png',
+                src: '/img/icons/icon-192-maskable.png',
+                sizes: '192x192',
+                type: 'image/png',
+                purpose: 'maskable',
+            },
+            {
+                src: '/img/icons/icon-512.png',
                 sizes: '512x512',
                 type: 'image/png',
             },
@@ -36,7 +44,7 @@ const PWAConfig: Partial<VitePWAOptions> = {
                 src: '/img/icons/icon-512-maskable.png',
                 sizes: '512x512',
                 type: 'image/png',
-                purpose: 'any maskable',
+                purpose: 'maskable',
             },
         ],
     },
@@ -45,10 +53,13 @@ const PWAConfig: Partial<VitePWAOptions> = {
         navigateFallbackDenylist: [/^\/(access|api|printer|server|websocket)/, /^\/webcam[2-4]?/],
         runtimeCaching: [
             {
-                urlPattern: (options) => options.url.pathname.startsWith('/config.json'),
+                urlPattern: /\/config\.json$/,
                 handler: 'StaleWhileRevalidate',
                 options: {
                     cacheName: 'config.json',
+                    cacheableResponse: {
+                        statuses: [0, 200],
+                    },
                 },
             },
         ],
@@ -80,13 +91,19 @@ export default defineConfig({
             dts: true, // enabled by default if `typescript` is installed
             resolvers: [VuetifyResolver()],
         }),
-        VueI18nPlugin({
-            strictMessage: false, // allow HTML tags in translation
-            escapeHtml: false, // allow HTML tags in translation
-        }),
     ],
 
     css: {
+        preprocessorOptions: {
+            sass: {
+                silenceDeprecations: ['import', 'global-builtin', 'slash-div', 'if-function'],
+                quietDeps: true,
+            },
+            scss: {
+                silenceDeprecations: ['import', 'global-builtin', 'slash-div', 'if-function'],
+                quietDeps: true,
+            },
+        },
         postcss: {
             plugins: [postcssNesting()],
         },
@@ -140,5 +157,10 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 8080,
+    },
+
+    test: {
+        environment: 'node',
+        include: ['tests/**/*.spec.ts'],
     },
 })

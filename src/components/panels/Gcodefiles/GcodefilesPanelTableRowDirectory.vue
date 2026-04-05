@@ -35,22 +35,23 @@
                 </v-list-item>
             </v-list>
         </v-menu>
-        <gcodefiles-rename-directory-dialog
-            :item="item"
-            :show-dialog="showRenameDirectoryDialog"
-            @close="showRenameDirectoryDialog = false" />
-        <gcodefiles-delete-directory-dialog
-            :item="item"
-            :show-dialog="showDeleteDirectoryDialog"
-            @close="showDeleteDirectoryDialog = false" />
+        <gcodefiles-rename-directory-dialog v-model="showRenameDirectoryDialog" :item="item" />
+        <confirmation-dialog
+            v-model="showDeleteDirectoryDialog"
+            :title="$t('Files.DeleteDirectory')"
+            :text="$t('Files.DeleteDirectoryQuestion', { name: item.filename })"
+            :action-button-text="$t('Buttons.Delete')"
+            @action="deleteDirectory" />
     </tr>
 </template>
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
+import type { LongpressEvent } from '@/directives/longpress'
 import BaseMixin from '@/components/mixins/base'
 import GcodefilesMixin from '@/components/mixins/gcodefiles'
 import { FileStateGcodefile } from '@/store/files/types'
 import { mdiDelete, mdiFolder, mdiRenameBox } from '@mdi/js'
+import { CLOSE_CONTEXT_MENU, EventBus } from '@/plugins/eventBus'
 
 @Component
 export default class GcodefilesPanelTableRowDirectory extends Mixins(BaseMixin, GcodefilesMixin) {
@@ -69,7 +70,7 @@ export default class GcodefilesPanelTableRowDirectory extends Mixins(BaseMixin, 
 
     @Prop({ type: Object, required: true }) readonly item!: FileStateGcodefile
     @Prop({ type: Boolean, required: true }) readonly isSelected!: boolean
-    @Prop({ type: Function, required: true }) readonly select!: Function
+    @Prop({ type: Function, required: true }) readonly select!: (value: boolean) => void
 
     get trClasses() {
         return {
@@ -79,20 +80,30 @@ export default class GcodefilesPanelTableRowDirectory extends Mixins(BaseMixin, 
         }
     }
 
-    showContextMenuAction(e: MouseEvent) {
-        if (this.showContextMenu) return
-
+    showContextMenuAction(e: MouseEvent | LongpressEvent) {
         e?.preventDefault()
+        EventBus.$emit(CLOSE_CONTEXT_MENU)
+
         this.showContextMenuX = e?.clientX || e?.pageX || window.screenX / 2
         this.showContextMenuY = e?.clientY || e?.pageY || window.screenY / 2
 
-        this.$nextTick(() => {
-            this.showContextMenu = true
-        })
+        this.showContextMenu = true
+    }
+
+    closeContextMenu() {
+        this.showContextMenu = false
     }
 
     goToDirectory() {
         this.currentPath += '/' + this.item.filename
+    }
+
+    deleteDirectory() {
+        this.$socket.emit(
+            'server.files.delete_directory',
+            { path: 'gcodes' + this.currentPath + '/' + this.item.filename, force: true },
+            { action: 'files/getDeleteDir' }
+        )
     }
 
     onDrop(e: DragEvent) {
@@ -129,6 +140,14 @@ export default class GcodefilesPanelTableRowDirectory extends Mixins(BaseMixin, 
     onDrag(e: DragEvent) {
         e.preventDefault()
         e.stopPropagation()
+    }
+
+    mounted() {
+        EventBus.$on(CLOSE_CONTEXT_MENU, this.closeContextMenu)
+    }
+
+    beforeDestroy() {
+        EventBus.$off(CLOSE_CONTEXT_MENU, this.closeContextMenu)
     }
 }
 </script>

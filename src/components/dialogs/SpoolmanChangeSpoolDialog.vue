@@ -36,6 +36,7 @@
                     <v-icon>{{ mdiRefresh }}</v-icon>
                 </v-btn>
                 <v-btn
+                    v-if="spoolManagerUrl"
                     :title="$t('Panels.SpoolmanPanel.OpenSpoolManager')"
                     class="px-2 minwidth-0 ml-3"
                     @click="openSpoolManager">
@@ -73,7 +74,7 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import Panel from '@/components/ui/Panel.vue'
 import { mdiCloseThick, mdiAdjust, mdiDatabase, mdiMagnify, mdiRefresh, mdiEject } from '@mdi/js'
@@ -90,7 +91,7 @@ export default class SpoolmanChangeSpoolDialog extends Mixins(BaseMixin) {
     mdiMagnify = mdiMagnify
     mdiRefresh = mdiRefresh
 
-    @Prop({ required: true }) declare readonly showDialog: boolean
+    @VModel({ type: Boolean }) showDialog!: boolean
     @Prop({ required: false, default: null }) declare readonly tool?: string
     @Prop({ required: false, default: null }) declare readonly afcLane?: string
     @Prop({ required: false, default: true }) declare readonly setActiveSpool?: boolean
@@ -141,10 +142,6 @@ export default class SpoolmanChangeSpoolDialog extends Mixins(BaseMixin) {
         ]
     }
 
-    get spoolManagerUrl() {
-        return this.$store.state.server.config.config?.spoolman?.server ?? null
-    }
-
     get existsSaveVariables() {
         const settings = this.$store.state.printer.configfile?.settings ?? {}
 
@@ -155,23 +152,19 @@ export default class SpoolmanChangeSpoolDialog extends Mixins(BaseMixin) {
         window.open(this.spoolManagerUrl, '_blank')
     }
 
-    mounted() {
-        this.refresh()
-    }
-
     refresh() {
         this.$store.dispatch('server/spoolman/refreshSpools')
     }
 
     close() {
-        this.$emit('close')
+        this.showDialog = false
     }
 
     refreshSpools() {
         this.$store.dispatch('server/spoolman/refreshSpools')
     }
 
-    customFilter(value: any, search: string, item: ServerSpoolmanStateSpool): boolean {
+    customFilter(_value: unknown, search: string, item: ServerSpoolmanStateSpool): boolean {
         if (search.trim().startsWith('web+spoolman:s-')) {
             const spoolId = parseInt(search.split('-')[1] ?? -1)
             return item.id === spoolId
@@ -249,7 +242,10 @@ export default class SpoolmanChangeSpoolDialog extends Mixins(BaseMixin) {
 
     @Watch('showDialog')
     onShowDialogChanged(newVal: boolean) {
-        if (newVal) this.search = ''
+        if (!newVal) return
+
+        this.refresh()
+        this.search = ''
     }
 }
 </script>

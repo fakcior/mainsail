@@ -72,9 +72,8 @@
         </v-row>
         <history-list-panel-detail-maintenance
             v-if="entryType === 'maintenance'"
-            :show="showMaintenanceDetails"
-            :item="maintenanceEntry"
-            @close="showMaintenanceDetails = false" />
+            v-model="showMaintenanceDetails"
+            :item="maintenanceEntry" />
     </v-alert>
 </template>
 
@@ -88,7 +87,7 @@ import { GuiMaintenanceStateEntry } from '@/store/gui/maintenance/types'
 
 interface ReminderOption {
     text: string | TranslateResult
-    clickFunction: Function
+    clickFunction: () => void
 }
 
 @Component({

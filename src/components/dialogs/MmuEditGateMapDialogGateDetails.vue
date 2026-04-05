@@ -25,7 +25,7 @@
                             :label="$t('Panels.MmuPanel.GateMapDialog.SpoolmanId')"
                             :rules="spoolIdRules"
                             :disabled="disableSpoolId"
-                            :hide-spin-buttons="disableSpoolId"
+                            hide-spin-buttons
                             outlined
                             dense
                             hide-details />
@@ -158,10 +158,9 @@
 
         <!-- SPOOLMAN (ADAPTED) SPOOL SELECTOR -->
         <spoolman-change-spool-dialog
-            :show-dialog="showSpoolmanSpoolChooserDialog"
+            v-model="showSpoolmanSpoolChooserDialog"
             :set-active-spool="false"
-            @select-spool="selectSpoolmanSpool"
-            @close="showSpoolmanSpoolChooserDialog = false" />
+            @select-spool="selectSpoolmanSpool" />
     </v-container>
 </template>
 
@@ -180,7 +179,7 @@ import MmuMixin, {
 import type { ServerSpoolmanStateSpool } from '@/store/server/spoolman/types'
 import { mdiSpeedometer, mdiRestart, mdiMinus, mdiPlus, mdiAdjust } from '@mdi/js'
 import { Debounce } from 'vue-debounce-decorator'
-import { VColorPickerColor } from 'vuetify/src/components/VColorPicker/util'
+import { VColorPickerColor } from '@/types/vuetify'
 
 @Component
 export default class MmuEditGateMapDialogGateDetails extends Mixins(BaseMixin, MmuMixin) {

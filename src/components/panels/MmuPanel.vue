@@ -34,7 +34,7 @@
                             small
                             class="w-100"
                             :loading="loadings.includes('mmu_stats')"
-                            @click="doSend('MMU_STATS SHOWCOUNTS=1')">
+                            @click="doSend('MMU_STATS SHOWCOUNTS=1', 'mmu_stats')">
                             <v-icon left>{{ mdiNoteText }}</v-icon>
                             {{ $t('Panels.MmuPanel.ButtonPrintStats') }}
                         </v-btn>
@@ -57,7 +57,7 @@
                             class="w-100"
                             :disabled="!canSend"
                             :loading="loadings.includes('mmu_check_gates')"
-                            @click="doSend('MMU_CHECK_GATES')">
+                            @click="doSend('MMU_CHECK_GATES', 'mmu_check_gates')">
                             <v-icon left>{{ mdiCheckAll }}</v-icon>
                             {{ $t('Panels.MmuPanel.ButtonCheckAllGates') }}
                         </v-btn>
@@ -70,23 +70,24 @@
         <v-card-text :class="{ 'mmu-disabled': !enabled }">
             <v-row>
                 <v-col class="pb-0">
-                    <MmuUnit
+                    <mmu-unit
                         v-for="i in mmuNumUnits"
                         :key="i"
                         :selected-gate="mmuGate"
                         :unit-index="i - 1"
                         :show-details="true"
+                        :show-context-menu="true"
                         @select-gate="selectGate" />
                 </v-col>
             </v-row>
             <v-row>
                 <v-col :cols="col1Size">
-                    <div class="text--disabled body-2">{{ toolchangeText }}</div>
-                    <div class="text-center body-1">{{ statusText }}</div>
+                    <div class="text--disabled body-1">{{ toolchangeText }}</div>
                     <mmu-filament-status />
                     <div v-if="showClogDetection" class="text-center">
-                        <mmu-clog-meter width="40%" />
-                        <div class="text--disabled body-1">{{ $t('Panels.MmuPanel.ClogDetection') }}</div>
+                        <mmu-clog-meter v-if="hasMmuEncoder" width="40%" />
+                        <mmu-flowguard-meter v-if="hasSyncFeedback" width="40%" />
+                        <div class="text--disabled body-1">{{ $t('Panels.MmuPanel.ClogTangleDetection') }}</div>
                     </div>
                 </v-col>
                 <v-col :cols="12 - col1Size">
@@ -133,14 +134,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
-import MmuMixin, {
-    ACTION_IDLE,
-    ACTION_LOADING,
-    ACTION_UNLOADING,
-    TOOL_GATE_BYPASS,
-    TOOL_GATE_UNKNOWN,
-} from '@/components/mixins/mmu'
-import { capitalize } from '@/plugins/helpers'
+import MmuMixin, { TOOL_GATE_BYPASS, TOOL_GATE_UNKNOWN } from '@/components/mixins/mmu'
 import { mdiMulticast, mdiDotsVertical, mdiCheckAll, mdiNoteText, mdiInformationOutline, mdiRefresh } from '@mdi/js'
 import Panel from '@/components/ui/Panel.vue'
 import MmuPanelSettings from '@/components/panels/Mmu/MmuPanelSettings.vue'
@@ -205,15 +199,15 @@ export default class MmuPanel extends Mixins(BaseMixin, MmuMixin) {
 
     selectGate(gateIndex: number) {
         if (gateIndex === TOOL_GATE_BYPASS) {
-            this.doSend('MMU_SELECT BYPASS=1')
+            this.doSend('MMU_SELECT BYPASS=1', 'mmu_select')
             return
         }
 
-        this.doSend(`MMU_SELECT GATE=${gateIndex}`)
+        this.doSend(`MMU_SELECT GATE=${gateIndex}`, 'mmu_select')
     }
 
     get showClogDetection() {
-        return this.hasMmuEncoder && this.$store.state.gui.view.mmu.showClogDetection
+        return (this.hasMmuEncoder || this.hasSyncFeedback) && this.$store.state.gui.view.mmu.showClogDetection
     }
 
     get showTtgMap() {
@@ -222,18 +216,6 @@ export default class MmuPanel extends Mixins(BaseMixin, MmuMixin) {
 
     get showDetails() {
         return this.$store.state.gui.view.mmu.showDetails ?? true
-    }
-
-    get slicerToolMap() {
-        return this.mmu?.slicer_tool_map ?? undefined
-    }
-
-    get totalToolchanges() {
-        return this.slicerToolMap?.total_toolchanges ?? 0
-    }
-
-    get numToolchanges() {
-        return this.mmu?.num_toolchanges ?? 0
     }
 
     get toolchangeText() {
@@ -256,35 +238,8 @@ export default class MmuPanel extends Mixins(BaseMixin, MmuMixin) {
         return this.mmu?.next_tool ?? TOOL_GATE_UNKNOWN
     }
 
-    get statusText() {
-        if (['complete', 'error', 'cancelled', 'started'].includes(this.mmuPrintState)) {
-            return capitalize(this.mmuPrintState)
-        }
-
-        if ([ACTION_LOADING, ACTION_UNLOADING].includes(this.mmuAction)) {
-            return `${this.mmuAction}: ${this.filamentPosition}mm`
-        }
-
-        if (this.mmuAction !== ACTION_IDLE) return this.mmuAction
-
-        if (this.mmuPrintState === 'printing') {
-            let str = `Printing (${this.numToolchanges}`
-            if (this.totalToolchanges > 0) str += `/${this.totalToolchanges}`
-            str += ' swaps)'
-            return str
-        }
-
-        const filament = this.mmu?.filament ?? 'Unknown'
-
-        return filament !== 'Unloaded' ? `Filament: ${this.filamentPosition}mm` : 'Filament: Unloaded'
-    }
-
     get reasonForPause() {
         return this.mmu?.reason_for_pause ?? null
-    }
-
-    get filamentPosition() {
-        return (this.mmu?.filament_position ?? 0).toFixed(1)
     }
 
     get fileForTtgMap() {
@@ -294,7 +249,7 @@ export default class MmuPanel extends Mixins(BaseMixin, MmuMixin) {
     }
 
     handleSyncSpoolman() {
-        this.doSend('MMU_SPOOLMAN REFRESH=1 QUIET=1')
+        this.doSend('MMU_SPOOLMAN REFRESH=1 QUIET=1', 'mmu_spoolman')
     }
 }
 </script>

@@ -157,7 +157,7 @@
                 </v-card-actions>
             </panel>
         </v-dialog>
-        <devices-dialog :show-dialog="dialogDevices" @close="dialogDevices = false" />
+        <devices-dialog v-model="dialogDevices" />
     </div>
 </template>
 
@@ -168,6 +168,7 @@ import { capitalize, formatFilesize, windowBeforeUnloadFunction } from '@/plugin
 import Panel from '@/components/ui/Panel.vue'
 import { klipperRepos } from '@/store/variables'
 import CodemirrorAsync from '@/components/inputs/CodemirrorAsync'
+import type Codemirror from '@/components/inputs/Codemirror.vue'
 import {
     mdiClose,
     mdiCloseThick,
@@ -210,8 +211,7 @@ export default class TheEditor extends Mixins(BaseMixin) {
     mdiUsb = mdiUsb
     mdiFormatListCheckbox = mdiFormatListCheckbox
 
-    //@ts-ignore
-    @Ref('editor') editor!: CodemirrorAsync
+    @Ref() readonly editor!: typeof Codemirror
 
     get changed() {
         return this.$store.state.editor.changed ?? false
